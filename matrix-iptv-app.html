@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07070f">
+<title>ماتريكس IPTV</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+::-webkit-scrollbar{display:none;}
+body{font-family:'Cairo',sans-serif;background:#07070f;color:#fff;direction:rtl;min-height:100vh;overscroll-behavior:none;}
+input,select,button{font-family:'Cairo',sans-serif;}
+input::placeholder{color:#44445a;}
+select option{background:#15151f;}
+.grad{background:linear-gradient(135deg,#ff4fa3,#ff8c42);}
+.grad-text{background:linear-gradient(90deg,#ff4fa3,#ff8c42);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;}
+.scroll-x{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:4px 0 8px;}
+.screen{display:none;}.screen.active{display:block;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.page{animation:fadeIn .3s ease;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal-box{width:100%;max-width:430px;background:linear-gradient(180deg,rgba(74,0,96,.2) 0%,#0e0e1a 30%);border:1px solid rgba(255,255,255,.08);border-radius:24px 24px 0 0;padding:22px;padding-bottom:44px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);}
+.admin-modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:16px;}
+.admin-modal-overlay.show{display:flex;}
+.admin-modal-box{width:100%;max-width:420px;background:#12121e;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:22px;max-height:88vh;overflow-y:auto;animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+.inp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;direction:rtl;margin-bottom:14px;}
+.inp-mono{font-family:monospace;direction:ltr;text-align:left;}
+.sel{width:100%;background:#15151f;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;direction:rtl;margin-bottom:14px;}
+.btn{border:none;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;width:100%;background:linear-gradient(135deg,#ff4fa3,#ff8c42);box-shadow:0 4px 18px rgba(255,79,163,.3);margin-bottom:10px;display:block;}
+.btn-sm{padding:7px 14px;font-size:11px;width:auto;display:inline-block;margin-bottom:0;}
+.btn-green{background:linear-gradient(135deg,#00c853,#00897b);box-shadow:0 4px 18px rgba(0,200,83,.25);}
+.btn-red{background:linear-gradient(135deg,#e53935,#c62828);box-shadow:0 4px 18px rgba(229,57,53,.25);}
+.btn-blue{background:linear-gradient(135deg,#2979ff,#1565c0);box-shadow:0 4px 18px rgba(41,121,255,.25);}
+.btn-gray{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);box-shadow:none;}
+.btn-orange{background:linear-gradient(135deg,#ff9800,#e65100);box-shadow:0 4px 18px rgba(255,152,0,.25);}
+.pill{display:inline-block;font-size:10px;font-weight:900;padding:2px 8px;border-radius:5px;color:#fff;letter-spacing:.5px;}
+.pill-pink{background:#ff4fa3;}.pill-green{background:#00c853;}.pill-red{background:#e53935;}.pill-blue{background:#2979ff;}.pill-orange{background:#ff9800;}.pill-purple{background:#7c4dff;}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a1a2a;border-radius:12px;padding:12px 20px;z-index:9999;display:flex;align-items:center;gap:8px;animation:slideDown .3s ease;white-space:nowrap;pointer-events:none;}
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(7,7,15,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-around;padding:9px 0 18px;z-index:200;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 12px;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.35);transition:filter .2s;}
+.nav-label{font-size:9px;font-weight:700;color:#444;transition:color .2s;}
+.nav-item.active .nav-icon{filter:none;}
+.nav-item.active .nav-label{color:#ff8c9e;}
+.nav-dot{width:18px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,#ff4fa3,#ff8c42);margin-top:-2px;display:none;}
+.nav-item.active .nav-dot{display:block;}
+.section-bar{width:3px;height:16px;background:linear-gradient(180deg,#ff4fa3,#ff8c42);border-radius:2px;display:inline-block;margin-left:8px;}
+.live-badge{background:#e53935;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:3px;animation:pulse 1.5s infinite;}
+.hero-dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;}
+.hero-dot.active{width:22px;background:linear-gradient(90deg,#ff4fa3,#ff8c42);}
+.tab-btn{white-space:nowrap;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.05);color:#8888aa;border:1px solid rgba(255,255,255,.08);transition:all .2s;flex-shrink:0;}
+.tab-btn.active{background:linear-gradient(135deg,#ff4fa3,#ff8c42);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(255,79,163,.3);}
+.admin-tab{display:flex;align-items:center;gap:5px;white-space:nowrap;padding:8px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.05);color:#8888aa;border:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+.admin-tab.active{background:linear-gradient(135deg,#ff4fa3,#ff8c42);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(255,79,163,.3);}
+.content-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+.copy-field{cursor:pointer;transition:opacity .2s;}.copy-field:active{opacity:.6;}
+#player-container{position:fixed;inset:0;z-index:5000;background:#000;display:none;flex-direction:column;}
+#player-container.show{display:flex;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════════ -->
+<div id="page-login" class="page" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+  <div style="position:fixed;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,79,163,.08),transparent 70%);pointer-events:none;"></div>
+  <div style="position:fixed;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,140,66,.06),transparent 70%);pointer-events:none;"></div>
+  <!-- Logo -->
+  <div style="margin-bottom:36px;text-align:center;">
+    <div style="width:86px;height:86px;border-radius:26px;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#fff;font-style:italic;box-shadow:0 16px 48px rgba(255,79,163,.45);margin:0 auto 16px;">M</div>
+    <div class="grad-text" style="font-size:30px;font-weight:900;">ماتريكس</div>
+    <div style="font-size:12px;color:#444455;margin-top:6px;">🌐 بوابة البث المتميز</div>
+  </div>
+  <!-- Mode toggle -->
+  <div style="display:flex;background:rgba(255,255,255,.05);border-radius:14px;padding:4px;margin-bottom:24px;width:100%;max-width:340px;">
+    <div id="mode-client" onclick="setLoginMode('client')" style="flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#ff4fa3,#ff8c42);color:#fff;box-shadow:0 4px 14px rgba(255,79,163,.35);">👤 دخول العميل</div>
+    <div id="mode-admin" onclick="setLoginMode('admin')" style="flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;color:#8888aa;">🔐 لوحة الأدمن</div>
+  </div>
+  <div style="width:100%;max-width:340px;">
+    <!-- Client login -->
+    <div id="client-login">
+      <div style="display:flex;gap:6px;margin-bottom:18px;">
+        <div class="tab-btn active" onclick="setLtype('activation',this)" style="flex:1;text-align:center;"><div style="font-size:16px;">🎟️</div><div style="margin-top:2px;">كود التفعيل</div></div>
+        <div class="tab-btn" onclick="setLtype('userpass',this)" style="flex:1;text-align:center;"><div style="font-size:16px;">👤</div><div style="margin-top:2px;">يوزر/باسورد</div></div>
+        <div class="tab-btn" onclick="setLtype('xtream',this)" style="flex:1;text-align:center;"><div style="font-size:16px;">📡</div><div style="margin-top:2px;">Xtream</div></div>
+      </div>
+      <div id="ltype-activation">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">كود التفعيل</div>
+        <input id="login-code" class="inp inp-mono" placeholder="MTRX-XXXX-XXXX">
+      </div>
+      <div id="ltype-userpass" style="display:none;">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">اسم المستخدم</div>
+        <input id="login-user" class="inp" placeholder="username">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">كلمة المرور</div>
+        <input id="login-pass" class="inp" type="password" placeholder="••••••••">
+      </div>
+      <div id="ltype-xtream" style="display:none;">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">رابط السيرفر</div>
+        <input id="login-xurl" class="inp inp-mono" placeholder="http://server.com:8080">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">يوزر Xtream</div>
+        <input id="login-xuser" class="inp inp-mono" placeholder="xtream_username">
+        <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">باسورد Xtream</div>
+        <input id="login-xpass" class="inp" type="password" placeholder="••••••••">
+      </div>
+    </div>
+    <!-- Admin login -->
+    <div id="admin-login" style="display:none;">
+      <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">يوزر الأدمن</div>
+      <input id="admin-user" class="inp" placeholder="Matrix-admin">
+      <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">كلمة المرور</div>
+      <input id="admin-pass" class="inp" type="password" placeholder="••••••••">
+    </div>
+    <div id="login-err" style="display:none;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:10px 14px;font-size:12px;color:#ff6b6b;margin-bottom:14px;text-align:center;">⚠️ بيانات غير صحيحة</div>
+    <button class="btn" onclick="doLogin()">▶ دخول التطبيق</button>
+    <div style="text-align:center;font-size:11px;color:#333;margin-top:12px;">ماتريكس IPTV © 2026</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECRET GATE
+══════════════════════════════════════════ -->
+<div id="page-secret" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;text-align:center;">
+  <div style="font-size:64px;margin-bottom:16px;" id="secret-icon">🔐</div>
+  <div style="font-size:22px;font-weight:900;margin-bottom:8px;">تحقق من هوية الأدمن</div>
+  <div style="font-size:12px;color:#8888aa;margin-bottom:28px;">أدخل الكود السري للوصول إلى لوحة التحكم</div>
+  <div style="width:100%;max-width:340px;">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">الكود السري</div>
+    <input id="secret-code" class="inp" type="password" placeholder="Osama-XXXX">
+    <div id="secret-err" style="display:none;color:#ff6b6b;font-size:12px;margin-bottom:12px;">الكود السري غير صحيح</div>
+    <button class="btn" onclick="doSecret()">🔓 تأكيد الدخول</button>
+    <div onclick="showPage('login')" style="margin-top:14px;font-size:12px;color:#444455;cursor:pointer;">← العودة</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CLIENT APP
+══════════════════════════════════════════ -->
+<div id="page-client" style="display:none;max-width:430px;margin:0 auto;">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:rgba(7,7,15,.97);position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07);">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;font-style:italic;">M</div>
+      <div class="grad-text" style="font-size:18px;font-weight:900;">ماتريكس</div>
+    </div>
+    <div id="sub-badge" style="font-size:11px;font-weight:800;padding:4px 11px;border-radius:20px;"></div>
+  </div>
+  <!-- Content -->
+  <div style="padding-bottom:76px;">
+    <!-- HOME TAB -->
+    <div id="client-home" class="screen active">
+      <!-- Hero -->
+      <div id="hero-banner" style="height:290px;position:relative;overflow:hidden;">
+        <div id="hero-bg" style="position:absolute;inset:0;transition:background 1.2s ease;"></div>
+        <div id="hero-glow" style="position:absolute;right:-50px;top:-50px;width:260px;height:260px;border-radius:50%;transition:all 1.2s;"></div>
+        <div id="hero-emoji" style="position:absolute;inset:0;font-size:130px;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;opacity:.15;user-select:none;filter:blur(3px);transition:all 1.2s;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(270deg,rgba(7,7,15,.97) 32%,rgba(7,7,15,.4) 70%,transparent 100%);"></div>
+        <div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);max-width:62%;text-align:right;">
+          <div id="hero-badges" style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:10px;"></div>
+          <div id="hero-title" style="font-size:22px;font-weight:900;line-height:1.2;margin-bottom:4px;"></div>
+          <div id="hero-ar" style="font-size:11px;color:#8888aa;margin-bottom:6px;"></div>
+          <div id="hero-stars" style="color:#ffd700;font-size:11px;margin-bottom:6px;"></div>
+          <div id="hero-meta" style="font-size:10px;color:#444455;margin-bottom:14px;"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button id="hero-play-btn" onclick="playHero()" style="background:linear-gradient(135deg,#ff4fa3,#ff8c42);border:none;color:#fff;padding:9px 18px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(255,79,163,.38);">▶ شاهد</button>
+            <button id="hero-list-btn" onclick="toggleHeroList()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;padding:9px 14px;border-radius:10px;font-size:12px;cursor:pointer;">+ قائمتي</button>
+          </div>
+        </div>
+        <div id="hero-dots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;"></div>
+      </div>
+      <!-- Sub-tabs -->
+      <div style="display:flex;gap:6px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div class="tab-btn active" onclick="setClientTab('all',this)">الرئيسية</div>
+        <div class="tab-btn" onclick="setClientTab('movies',this)">أفلام</div>
+        <div class="tab-btn" onclick="setClientTab('series',this)">مسلسلات</div>
+        <div class="tab-btn" onclick="setClientTab('live',this)">🔴 مباشر</div>
+        <div class="tab-btn" onclick="setClientTab('kids',this)">أطفال</div>
+      </div>
+      <!-- Movies -->
+      <div id="section-movies" style="padding:20px 0 0;">
+        <div style="display:flex;justify-content:space-between;padding:0 18px 12px;">
+          <span style="font-size:12px;color:#ff4fa3;font-weight:700;">الكل ›</span>
+          <div style="font-size:14px;font-weight:800;display:flex;align-items:center;"><span class="section-bar"></span>أفلام مميزة</div>
+        </div>
+        <div id="movies-row" class="scroll-x" style="padding:0 18px;"></div>
+      </div>
+      <!-- Series -->
+      <div id="section-series" style="padding:20px 0 0;">
+        <div style="display:flex;justify-content:space-between;padding:0 18px 12px;">
+          <span style="font-size:12px;color:#ff4fa3;font-weight:700;">الكل ›</span>
+          <div style="font-size:14px;font-weight:800;display:flex;align-items:center;"><span class="section-bar"></span>مسلسلات رائجة</div>
+        </div>
+        <div id="series-row" class="scroll-x" style="padding:0 18px;"></div>
+      </div>
+      <!-- Live section in home -->
+      <div id="section-live-home" style="padding:20px 18px 0;display:none;">
+        <div id="live-home-list"></div>
+      </div>
+      <!-- Kids -->
+      <div id="section-kids" style="display:none;text-align:center;padding:60px 30px;color:#444455;">
+        <div style="font-size:60px;margin-bottom:12px;">🧒</div>
+        <div style="font-size:16px;font-weight:700;">قريباً — محتوى الأطفال</div>
+      </div>
+      <!-- Categories -->
+      <div id="section-cats" style="padding:20px 0 0;">
+        <div style="display:flex;justify-content:space-between;padding:0 18px 12px;">
+          <span></span>
+          <div style="font-size:14px;font-weight:800;display:flex;align-items:center;"><span class="section-bar"></span>تصفح حسب الفئة</div>
+        </div>
+        <div id="cats-row" class="scroll-x" style="padding:0 18px;"></div>
+      </div>
+      <!-- Sub bar -->
+      <div id="sub-bar" style="margin:20px 18px 0;border-radius:14px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;"></div>
+    </div>
+    <!-- SEARCH TAB -->
+    <div id="client-search" class="screen" style="padding:16px 18px;">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px 15px;display:flex;gap:10px;align-items:center;margin-bottom:20px;">
+        <input id="search-inp" oninput="doSearch()" placeholder="ابحث عن فيلم أو مسلسل..." style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;direction:rtl;text-align:right;">
+        <span style="color:#444455;">🔍</span>
+      </div>
+      <div id="search-results"></div>
+    </div>
+    <!-- LIVE TAB -->
+    <div id="client-live" class="screen" style="padding:16px 18px;">
+      <div style="font-size:15px;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <span class="live-badge" style="border-radius:5px;padding:2px 8px;font-size:10px;">LIVE</span>القنوات المباشرة
+      </div>
+      <div id="channels-list"></div>
+    </div>
+    <!-- MY LIST TAB -->
+    <div id="client-mylist" class="screen" style="padding:16px 18px;">
+      <div style="font-size:14px;font-weight:800;margin-bottom:14px;">📋 قائمتي (<span id="list-count">0</span>)</div>
+      <div id="mylist-grid" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      <div id="mylist-empty" style="text-align:center;padding:60px 30px;color:#444455;">
+        <div style="font-size:56px;margin-bottom:12px;">🎬</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;">قائمتك فارغة</div>
+        <div style="font-size:12px;">أضف محتوى لمشاهدته لاحقاً</div>
+      </div>
+    </div>
+    <!-- PROFILE TAB -->
+    <div id="client-profile" class="screen" style="padding:24px 18px;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px;box-shadow:0 10px 28px rgba(255,79,163,.38);">👤</div>
+        <div id="profile-name" style="font-size:18px;font-weight:900;"></div>
+        <div id="profile-user" style="font-size:12px;color:#8888aa;margin-top:4px;"></div>
+        <div style="margin-top:10px;display:inline-block;background:linear-gradient(135deg,#ff4fa3,#ff8c42);border-radius:20px;padding:4px 16px;font-size:12px;font-weight:700;">⭐ اشتراك مميز</div>
+      </div>
+      <div class="card" style="padding:16px;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:800;margin-bottom:12px;">🎟️ معلومات الاشتراك</div>
+        <div id="profile-details"></div>
+        <div style="font-size:9px;color:#333;text-align:center;margin-top:6px;">اضغط على أي قيمة لنسخها</div>
+      </div>
+      <button class="btn btn-red" onclick="doLogout()">🚪 تسجيل الخروج</button>
+    </div>
+  </div>
+  <!-- Bottom Nav -->
+  <div class="nav-bar">
+    <div class="nav-item active" onclick="switchClientScreen('home',this)"><div class="nav-icon">🏠</div><div class="nav-label">الرئيسية</div><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchClientScreen('search',this)"><div class="nav-icon">🔍</div><div class="nav-label">البحث</div><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchClientScreen('live',this)"><div class="nav-icon">📺</div><div class="nav-label">مباشر</div><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchClientScreen('mylist',this)"><div class="nav-icon">📋</div><div class="nav-label">قائمتي</div><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchClientScreen('profile',this)"><div class="nav-icon">👤</div><div class="nav-label">حسابي</div><div class="nav-dot"></div></div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div id="detail-modal" class="modal-overlay" onclick="closeDetailModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div style="width:38px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 20px;"></div>
+    <div style="display:flex;gap:14px;margin-bottom:20px;">
+      <div id="modal-poster" style="width:96px;height:136px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:50px;"></div>
+      <div style="flex:1;text-align:right;">
+        <div id="modal-title" style="font-size:17px;font-weight:900;margin-bottom:4px;line-height:1.3;"></div>
+        <div id="modal-ar" style="font-size:11px;color:#8888aa;margin-bottom:8px;"></div>
+        <div id="modal-stars" style="color:#ffd700;font-size:11px;margin-bottom:6px;"></div>
+        <div id="modal-meta" style="font-size:11px;color:#444455;"></div>
+        <div id="modal-genre" style="font-size:11px;color:#8888aa;margin-top:4px;"></div>
+        <div id="modal-url-info" style="font-size:9px;color:#ff4fa3;font-family:monospace;margin-top:4px;"></div>
+      </div>
+    </div>
+    <button class="btn" onclick="playSelected()">▶ شاهد الآن</button>
+    <button class="btn btn-gray" id="modal-list-btn" onclick="toggleSelectedList()">+ أضف للقائمة</button>
+    <button class="btn btn-gray" onclick="closeDetailModal()" style="color:#666;margin-bottom:0;">إغلاق</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ADMIN PANEL
+══════════════════════════════════════════ -->
+<div id="page-admin" style="display:none;">
+  <!-- Admin Header -->
+  <div style="background:rgba(7,7,15,.97);border-bottom:1px solid rgba(255,255,255,.07);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(12px);">
+    <button class="btn btn-gray btn-sm" onclick="doLogout()" style="margin-bottom:0;">🚪 خروج</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div><div class="grad-text" style="font-size:15px;font-weight:900;">لوحة تحكم ماتريكس</div><div style="font-size:10px;color:#444455;text-align:right;">Matrix-admin</div></div>
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;font-style:italic;">M</div>
+    </div>
+  </div>
+  <!-- Admin Tabs -->
+  <div style="display:flex;gap:4px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="admin-tab active" onclick="setAdminTab('dash',this)">📊 الرئيسية</div>
+    <div class="admin-tab" onclick="setAdminTab('clients',this)">👥 العملاء</div>
+    <div class="admin-tab" onclick="setAdminTab('codes',this)">🎟️ الأكواد</div>
+    <div class="admin-tab" onclick="setAdminTab('movies',this)">🎬 الأفلام</div>
+    <div class="admin-tab" onclick="setAdminTab('series',this)">📽️ المسلسلات</div>
+    <div class="admin-tab" onclick="setAdminTab('channels',this)">📺 القنوات</div>
+    <div class="admin-tab" onclick="setAdminTab('import',this)" style="background:linear-gradient(135deg,#00bcd4,#0097a7);color:#fff;border:none;">📥 استيراد</div>
+    <div class="admin-tab" onclick="setAdminTab('cats',this)">🗂️ التصنيفات</div>
+    <div class="admin-tab" onclick="setAdminTab('settings',this)">⚙️ الإعدادات</div>
+  </div>
+  <div id="admin-content" style="padding:18px 16px;padding-bottom:40px;"></div>
+</div>
+
+<!-- Admin Modal -->
+<div id="admin-modal" class="admin-modal-overlay" onclick="closeAdminModal()">
+  <div class="admin-modal-box" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <span onclick="closeAdminModal()" style="color:#444455;cursor:pointer;font-size:22px;">✕</span>
+      <div id="admin-modal-title" style="font-size:15px;font-weight:900;"></div>
+    </div>
+    <div id="admin-modal-body"></div>
+  </div>
+</div>
+
+<!-- VIDEO PLAYER -->
+<div id="player-container">
+  <video id="main-video" style="width:100%;height:100%;object-fit:contain;max-height:100vh;" playsinline></video>
+  <div id="no-url-msg" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:30px;">
+    <div id="no-url-emoji" style="font-size:80px;"></div>
+    <div id="no-url-title" style="font-size:20px;font-weight:900;"></div>
+    <div style="background:rgba(255,79,163,.15);border:1px solid rgba(255,79,163,.3);border-radius:14px;padding:16px 24px;max-width:320px;">
+      <div style="font-size:13px;color:#ff4fa3;font-weight:700;margin-bottom:8px;">⚠️ لا يوجد رابط بعد</div>
+      <div style="font-size:12px;color:#8888aa;line-height:1.6;">قم بإضافة رابط البث من لوحة تحكم الأدمن</div>
+    </div>
+  </div>
+  <div id="player-spinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;">
+    <div style="width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top:3px solid #ff4fa3;animation:spin 1s linear infinite;"></div>
+  </div>
+  <!-- Controls -->
+  <div id="player-controls" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;transition:opacity .3s;">
+    <div style="background:linear-gradient(180deg,rgba(0,0,0,.85),transparent);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="player-live-badge" class="live-badge" style="display:none;border-radius:4px;padding:3px 8px;">● LIVE</span>
+        <div id="player-title" style="font-size:12px;color:#ccc;font-weight:700;"></div>
+      </div>
+      <div onclick="closePlayer()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;">✕</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:32px;">
+      <div id="btn-seek-back" onclick="seekBack()" style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;">⏪</div>
+      <div onclick="togglePlay()" style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:28px;box-shadow:0 8px 30px rgba(255,79,163,.5);" id="play-btn-icon">▶</div>
+      <div id="btn-seek-fwd" onclick="seekFwd()" style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;">⏩</div>
+    </div>
+    <div style="background:linear-gradient(0deg,rgba(0,0,0,.9),transparent);padding:14px 16px;">
+      <div id="progress-wrap" style="margin-bottom:12px;">
+        <div onclick="seekTo(event)" style="height:4px;background:rgba(255,255,255,.2);border-radius:2px;cursor:pointer;position:relative;margin-bottom:6px;">
+          <div id="progress-bar" style="height:100%;background:linear-gradient(90deg,#ff4fa3,#ff8c42);border-radius:2px;width:0%;transition:width .2s;"></div>
+          <div id="progress-thumb" style="position:absolute;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:#fff;margin-left:-6px;left:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;">
+          <span id="dur-total">0:00</span>
+          <span id="dur-current">0:00</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div onclick="toggleFS()" style="font-size:20px;cursor:pointer;color:#ccc;">⊞</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div onclick="toggleMute()" id="mute-btn" style="font-size:20px;cursor:pointer;color:#ccc;">🔊</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA & STATE
+// ══════════════════════════════════════════
+const ADMIN_CREDS = { username:"Matrix-admin", password:"Miramaya2026", secret:"Osama-1980" };
+const DURATIONS   = [{label:"3 أيام",days:3},{label:"30 يوم",days:30},{label:"90 يوم",days:90},{label:"180 يوم",days:180},{label:"365 يوم",days:365}];
+
+const DEFAULT_MOVIES = [
+  {id:"m1",title:"Ocean's Eleven",ar:"أوشن إيليفن",genre:"جريمة",rating:7.7,year:2001,duration:"1س 56د",emoji:"🃏",color:["#0d1b4b","#1a3a8a","#0a1230"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+  {id:"m2",title:"The Transporter",ar:"الناقل",genre:"أكشن",rating:6.8,year:2002,duration:"1س 32د",emoji:"🚗",color:["#1a0a00","#5a2200","#3a1100"],badge:"4K",url:"",urlType:"direct",type:"movie"},
+  {id:"m3",title:"Rambo",ar:"رامبو",genre:"أكشن",rating:7.0,year:2008,duration:"1س 32د",emoji:"💥",color:["#1a0000","#5a0000","#3a0000"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+  {id:"m4",title:"Matilda the Musical",ar:"ماتيلدا",genre:"موسيقي",rating:7.0,year:2022,duration:"1س 57د",emoji:"📚",color:["#0a1a2a","#1a4a6a","#0a2a3a"],badge:"NEW",url:"",urlType:"direct",type:"movie"},
+  {id:"m5",title:"Constantine",ar:"قسطنطين",genre:"خيال",rating:7.2,year:2018,duration:"1س 30د",emoji:"👁️",color:["#150520","#3d0f5a","#250838"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+  {id:"m6",title:"Jack Ryan",ar:"جاك رايان",genre:"تجسس",rating:8.0,year:2018,duration:"1س 45د",emoji:"🕵️",color:["#001520","#003550","#001530"],badge:"4K",url:"",urlType:"direct",type:"movie"},
+  {id:"m7",title:"Trap House",ar:"البيت المحاصر",genre:"إثارة",rating:6.2,year:2023,duration:"1س 28د",emoji:"🏚️",color:["#1a1500","#4a3800","#2a2000"],badge:"NEW",url:"",urlType:"direct",type:"movie"},
+  {id:"m8",title:"Magic Faraway Tree",ar:"الشجرة السحرية",genre:"مغامرة",rating:6.5,year:2024,duration:"1س 39د",emoji:"🌳",color:["#001a0a","#004a25","#002a15"],badge:"NEW",url:"",urlType:"direct",type:"movie"},
+];
+const DEFAULT_SERIES = [
+  {id:"s1",title:"باب الحارة",sub:"Bab Al Hara",genre:"دراما",eps:120,seasons:9,rating:8.2,emoji:"🏘️",color:["#2a1500","#6a3800","#4a2200"],url:"",urlType:"direct",type:"series"},
+  {id:"s2",title:"ورود وذنوب",sub:"Güller ve Günahlar",genre:"رومانسي",eps:45,seasons:2,rating:8.5,emoji:"🌹",color:["#1a0020","#4a0060","#2a0040"],url:"",urlType:"direct",type:"series"},
+  {id:"s3",title:"اللعبة",sub:"The Game",genre:"إثارة",eps:32,seasons:2,rating:7.8,emoji:"🎮",color:["#001520","#003f5a","#001f35"],url:"",urlType:"direct",type:"series"},
+  {id:"s4",title:"حلم اشرف",sub:"Eşref Rüya",genre:"دراما",eps:28,seasons:1,rating:8.0,emoji:"🌙",color:["#150020","#3a0055","#200035"],url:"",urlType:"direct",type:"series"},
+  {id:"s5",title:"تحت الأرض",sub:"Sevdiğim Sensin",genre:"رومانسي",eps:40,seasons:2,rating:8.3,emoji:"💕",color:["#1a0510","#5a1535","#3a0a20"],url:"",urlType:"direct",type:"series"},
+  {id:"s6",title:"المدينة البعيدة",sub:"Uzak Şehir",genre:"دراما",eps:36,seasons:2,rating:7.5,emoji:"🏙️",color:["#0a1000","#254000","#152500"],url:"",urlType:"direct",type:"series"},
+  {id:"s7",title:"انت من احب",sub:"Sen Sevdiğim",genre:"رومانسي",eps:24,seasons:1,rating:8.1,emoji:"❤️",color:["#1a0005","#5a0020","#3a0010"],url:"",urlType:"direct",type:"series"},
+  {id:"s8",title:"بيحبك",sub:"Seni Seviyor",genre:"رومانسي",eps:30,seasons:2,rating:7.9,emoji:"💖",color:["#0d0020","#30005a","#1a0035"],url:"",urlType:"direct",type:"series"},
+];
+const DEFAULT_CHANNELS = [
+  {id:"ch1",name:"MBC مصر",category:"عربي",emoji:"📺",url:"",urlType:"m3u8",type:"live",viewers:"12k"},
+  {id:"ch2",name:"روتانا سينما",category:"أفلام",emoji:"🎬",url:"",urlType:"m3u8",type:"live",viewers:"8k"},
+  {id:"ch3",name:"beIN Sports 1",category:"رياضة",emoji:"⚽",url:"",urlType:"m3u8",type:"live",viewers:"45k"},
+  {id:"ch4",name:"Al Jazeera",category:"أخبار",emoji:"📰",url:"",urlType:"m3u8",type:"live",viewers:"30k"},
+  {id:"ch5",name:"MBC 4",category:"عربي",emoji:"🌟",url:"",urlType:"m3u8",type:"live",viewers:"9k"},
+  {id:"ch6",name:"Dubai TV",category:"عربي",emoji:"🏙️",url:"",urlType:"m3u8",type:"live",viewers:"6k"},
+];
+const DEFAULT_CATS = [
+  {id:"c1",name:"بث مباشر",icon:"📺"},{id:"c2",name:"أفلام",icon:"🎬"},{id:"c3",name:"مسلسلات",icon:"📽️"},
+  {id:"c4",name:"أطفال",icon:"🧒"},{id:"c5",name:"برامج",icon:"📻"},{id:"c6",name:"القرآن",icon:"📖"},
+  {id:"c7",name:"موسيقى",icon:"🎵"},{id:"c8",name:"تعليمية",icon:"🎓"},{id:"c9",name:"وثائقي",icon:"🔍"},
+];
+const DEFAULT_CLIENTS = [
+  {id:"cl1",name:"أسامة",username:"Osama129",password:"Maya3010",activationCode:"Martix-O1980",xtreamUser:"Osama129_xt",xtreamPass:"Maya3010",xtreamUrl:"http://matrix.tv:8080",createdAt:"2026-01-01",expiresAt:"2026-12-31",days:365,status:"active",maxConn:2,notes:"المالك"},
+  {id:"cl2",name:"سارة علي",username:"sara_tv",password:"sara456",activationCode:"MTRX-E5F6-G7H8",xtreamUser:"sara_xt",xtreamPass:"xt789012",xtreamUrl:"http://matrix.tv:8080",createdAt:"2026-04-01",expiresAt:"2026-07-01",days:90,status:"active",maxConn:1,notes:""},
+];
+
+// LS helpers
+const ls = {
+  get:(k,def)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch{return def;}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}},
+};
+
+let DATA = {
+  get movies(){return ls.get("mx_movies",DEFAULT_MOVIES);},
+  set movies(v){ls.set("mx_movies",v);},
+  get series(){return ls.get("mx_series",DEFAULT_SERIES);},
+  set series(v){ls.set("mx_series",v);},
+  get channels(){return ls.get("mx_channels",DEFAULT_CHANNELS);},
+  set channels(v){ls.set("mx_channels",v);},
+  get cats(){return ls.get("mx_cats",DEFAULT_CATS);},
+  set cats(v){ls.set("mx_cats",v);},
+  get clients(){return ls.get("mx_clients",DEFAULT_CLIENTS);},
+  set clients(v){ls.set("mx_clients",v);},
+  get myList(){return ls.get("mx_mylist",[]);},
+  set myList(v){ls.set("mx_mylist",v);},
+};
+
+let STATE = { loginMode:"client", ltype:"activation", currentClient:null, heroIdx:0, heroTimer:null, selectedItem:null, adminTab:"dash", playerItem:null, isPlaying:false, isMuted:false, hlsInstance:null };
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+const uid=()=>Math.random().toString(36).slice(2,9);
+const seg=()=>{const c="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";return Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join("");};
+const genCode=()=>`MTRX-${seg()}-${seg()}`;
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];};
+const daysLeft=e=>Math.max(0,Math.ceil((new Date(e)-new Date())/864e5));
+const stars=n=>"★".repeat(Math.round(n/2))+"☆".repeat(5-Math.round(n/2));
+const randColor=()=>{const p=[["#0d1b4b","#1a3a8a","#0a1230"],["#1a0030","#4a0060","#2a0040"],["#001520","#003550","#001530"],["#1a0a00","#5a2200","#3a1100"],["#001a0a","#004a25","#002a15"],["#150020","#3d0f5a","#250838"],["#1a0005","#5a0020","#3a0010"],["#0a1000","#254000","#152500"]];return p[Math.floor(Math.random()*p.length)];};
+const fmtTime=s=>{if(!s||isNaN(s))return"0:00";const m=Math.floor(s/60);const sc=Math.floor(s%60);return`${m}:${sc<10?"0":""}${sc}`;};
+
+function showToast(msg,type="success"){
+  const t=document.getElementById("toast");
+  const icon=type==="success"?"✅":type==="error"?"❌":"⚠️";
+  const color=type==="success"?"#00c853":type==="error"?"#e53935":"#ff9800";
+  t.innerHTML=`<span style="color:${color};font-size:16px;">${icon}</span><span style="font-size:13px;font-weight:700;">${msg}</span>`;
+  t.style.border=`1px solid ${color}44`;
+  t.style.display="flex";
+  setTimeout(()=>t.style.display="none",2800);
+}
+
+function copyText(text){
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  showToast("تم النسخ ✅");
+}
+
+function showPage(name){
+  ["page-login","page-secret","page-client","page-admin"].forEach(p=>{
+    const el=document.getElementById(p);
+    if(el)el.style.display="none";
+  });
+  const el=document.getElementById("page-"+name);
+  if(el){el.style.display=name==="page-secret"||name==="secret"?"flex":"block";}
+  if(name==="secret"){document.getElementById("page-secret").style.display="flex";}
+}
+
+// ══════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════
+function setLoginMode(mode){
+  STATE.loginMode=mode;
+  document.getElementById("client-login").style.display=mode==="client"?"block":"none";
+  document.getElementById("admin-login").style.display=mode==="admin"?"block":"none";
+  document.getElementById("mode-client").style.background=mode==="client"?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"transparent";
+  document.getElementById("mode-client").style.color=mode==="client"?"#fff":"#8888aa";
+  document.getElementById("mode-admin").style.background=mode==="admin"?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"transparent";
+  document.getElementById("mode-admin").style.color=mode==="admin"?"#fff":"#8888aa";
+  document.getElementById("login-err").style.display="none";
+}
+
+function setLtype(type,el){
+  STATE.ltype=type;
+  ["activation","userpass","xtream"].forEach(t=>{
+    const d=document.getElementById("ltype-"+t);
+    if(d)d.style.display=t===type?"block":"none";
+  });
+  document.querySelectorAll("#client-login .tab-btn").forEach(b=>b.classList.remove("active"));
+  if(el)el.classList.add("active");
+}
+
+function doLogin(){
+  document.getElementById("login-err").style.display="none";
+  if(STATE.loginMode==="admin"){
+    const u=document.getElementById("admin-user").value.trim();
+    const p=document.getElementById("admin-pass").value;
+    if(u===ADMIN_CREDS.username&&p===ADMIN_CREDS.password){
+      document.getElementById("page-login").style.display="none";
+      document.getElementById("page-secret").style.display="flex";
+    } else {document.getElementById("login-err").style.display="block";}
+    return;
+  }
+  // Client login
+  const clients=DATA.clients;
+  let found=null;
+  if(STATE.ltype==="activation"){
+    const code=document.getElementById("login-code").value.trim();
+    found=clients.find(c=>c.activationCode===code);
+  } else if(STATE.ltype==="userpass"){
+    const u=document.getElementById("login-user").value.trim();
+    const p=document.getElementById("login-pass").value;
+    found=clients.find(c=>c.username===u&&c.password===p);
+  } else {
+    const xu=document.getElementById("login-xuser").value.trim();
+    found=clients.find(c=>c.xtreamUser===xu)||clients[0];
+  }
+  if(found){
+    STATE.currentClient=found;
+    initClientApp();
+    document.getElementById("page-login").style.display="none";
+    document.getElementById("page-client").style.display="block";
+  } else {
+    document.getElementById("login-err").style.display="block";
+  }
+}
+
+function doSecret(){
+  const code=document.getElementById("secret-code").value;
+  if(code===ADMIN_CREDS.secret){
+    document.getElementById("secret-icon").textContent="✅";
+    setTimeout(()=>{
+      document.getElementById("page-secret").style.display="none";
+      document.getElementById("page-admin").style.display="block";
+      initAdminApp();
+    },500);
+  } else {
+    document.getElementById("secret-err").style.display="block";
+  }
+}
+
+function doLogout(){
+  STATE.currentClient=null;
+  if(STATE.heroTimer)clearInterval(STATE.heroTimer);
+  closePlayer();
+  document.getElementById("page-client").style.display="none";
+  document.getElementById("page-admin").style.display="none";
+  document.getElementById("page-login").style.display="block";
+  document.getElementById("secret-code").value="";
+  document.getElementById("secret-icon").textContent="🔐";
+  document.getElementById("secret-err").style.display="none";
+}
+
+// ══════════════════════════════════════════
+//  CLIENT APP
+// ══════════════════════════════════════════
+function initClientApp(){
+  const c=STATE.currentClient;
+  const left=daysLeft(c.expiresAt||addDays(30));
+  const lc=left<=3?"#e53935":left<=30?"#ff9800":"#00c853";
+  // Sub badge
+  const badge=document.getElementById("sub-badge");
+  badge.textContent=(left<=3?"⚠️ ":left<=30?"⏰ ":"🛡️ ")+left+" يوم";
+  badge.style.cssText=`font-size:11px;font-weight:800;padding:4px 11px;border-radius:20px;background:${lc}15;border:1px solid ${lc}40;color:${lc};`;
+  // Profile
+  document.getElementById("profile-name").textContent=c.name||"مشترك";
+  document.getElementById("profile-user").textContent=c.username;
+  // Profile details
+  const rows=[{l:"كود التفعيل",v:c.activationCode},{l:"يوزر التطبيق",v:c.username},{l:"يوزر Xtream",v:c.xtreamUser},{l:"باسورد Xtream",v:c.xtreamPass},{l:"رابط Xtream",v:c.xtreamUrl},{l:"تاريخ الانتهاء",v:c.expiresAt},{l:"الأيام المتبقية",v:left+" يوم"},{l:"الأجهزة",v:c.maxConn+" أجهزة"}];
+  document.getElementById("profile-details").innerHTML=rows.map(r=>`<div class="copy-field" onclick="copyText('${r.v||""}')" style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);"><span style="font-family:monospace;font-size:11px;color:#ff4fa3;text-align:left;direction:ltr;">${r.v||"—"}</span><span style="font-size:12px;color:#8888aa;">${r.l}</span></div>`).join("");
+  // Sub bar
+  const subBar=document.getElementById("sub-bar");
+  subBar.style.cssText=`margin:20px 18px 0;border-radius:14px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;background:${lc}10;border:1px solid ${lc}28;`;
+  subBar.innerHTML=`<div style="font-size:32px;">${left<=3?"⚠️":left<=30?"⏰":"🛡️"}</div><div style="text-align:right;"><div style="font-size:11px;color:#8888aa;">صلاحية اشتراكك</div><div style="font-size:18px;font-weight:900;color:${lc};">${left} يوم متبقي</div><div style="font-size:10px;color:#444455;">${c.expiresAt}</div></div>`;
+  renderMovies(); renderSeries(); renderChannels(); renderCats(); renderMyList();
+  initHero();
+}
+
+function renderMovies(){
+  const movies=DATA.movies;
+  document.getElementById("movies-row").innerHTML=movies.map(m=>`
+    <div style="flex:0 0 115px;cursor:pointer;" onclick="openDetail('${m.id}','movie')">
+      <div style="width:115px;height:162px;border-radius:11px;background:linear-gradient(155deg,${m.color[0]},${m.color[1]});position:relative;display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:7px;box-shadow:0 6px 18px rgba(0,0,0,.56);overflow:hidden;">
+        ${m.emoji}
+        <div style="position:absolute;bottom:0;left:0;right:0;height:42%;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);"></div>
+        <div style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,.75);border-radius:5px;padding:2px 6px;font-size:9px;color:#ffd700;font-weight:700;">★${m.rating}</div>
+        <div style="position:absolute;top:7px;left:7px;background:#ff4fa3;color:#fff;font-size:8px;font-weight:900;padding:2px 6px;border-radius:4px;">${m.badge}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-align:center;line-height:1.3;">${m.title}</div>
+      <div style="font-size:9px;color:#444455;text-align:center;margin-top:2px;">${m.genre}</div>
+    </div>`).join("");
+}
+
+function renderSeries(){
+  const series=DATA.series;
+  document.getElementById("series-row").innerHTML=series.map(s=>`
+    <div style="flex:0 0 155px;cursor:pointer;" onclick="openDetail('${s.id}','series')">
+      <div style="width:155px;height:98px;border-radius:11px;background:linear-gradient(135deg,${s.color[0]},${s.color[1]});position:relative;display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:7px;overflow:hidden;">
+        ${s.emoji}
+        <div style="position:absolute;bottom:0;left:0;right:0;height:42%;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);"></div>
+        <div style="position:absolute;bottom:7px;right:8px;font-size:9px;color:rgba(255,255,255,.6);font-weight:600;">${s.eps} حلقة</div>
+        <div style="position:absolute;top:7px;left:7px;background:rgba(0,0,0,.7);border-radius:5px;padding:2px 5px;font-size:9px;color:#ffd700;font-weight:700;">★${s.rating}</div>
+      </div>
+      <div style="font-size:12px;font-weight:800;text-align:center;">${s.title}</div>
+      <div style="font-size:9px;color:#444455;text-align:center;margin-top:2px;">${s.sub}</div>
+    </div>`).join("");
+}
+
+function renderChannels(){
+  const channels=DATA.channels;
+  // Live screen
+  document.getElementById("channels-list").innerHTML=channels.map(ch=>channelCard(ch)).join("");
+  // Live in home
+  document.getElementById("live-home-list").innerHTML=channels.map(ch=>channelCard(ch)).join("");
+}
+
+function channelCard(ch){
+  return `<div class="card" style="padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="playItem('${ch.id}','live')">
+    <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#1a0030,#4a0080);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">${ch.emoji}</div>
+    <div style="flex:1;text-align:right;"><div style="font-size:13px;font-weight:800;">${ch.name}</div><div style="font-size:10px;color:#8888aa;">${ch.category} · 👁 ${ch.viewers}</div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="live-badge" style="border-radius:3px;">LIVE</span><div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:12px;">▶</div></div>
+  </div>`;
+}
+
+function renderCats(){
+  document.getElementById("cats-row").innerHTML=DATA.cats.map(c=>`
+    <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;">
+      <div style="width:56px;height:56px;background:rgba(255,79,163,.07);border:1.5px solid rgba(255,79,163,.18);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;">${c.icon}</div>
+      <div style="font-size:10px;font-weight:700;color:#8888aa;text-align:center;line-height:1.3;">${c.name}</div>
+    </div>`).join("");
+}
+
+function renderMyList(){
+  const list=DATA.myList;
+  document.getElementById("list-count").textContent=list.length;
+  document.getElementById("mylist-empty").style.display=list.length?"none":"block";
+  document.getElementById("mylist-grid").innerHTML=list.map(x=>`
+    <div style="width:calc(50% - 5px);aspect-ratio:2/3;border-radius:12px;background:linear-gradient(155deg,${x.color[0]},${x.color[1]});display:flex;align-items:center;justify-content:center;font-size:46px;position:relative;cursor:pointer;overflow:hidden;" onclick="openDetail('${x.id}','${x.type}')">
+      ${x.emoji}
+      <div style="position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);"></div>
+      <div style="position:absolute;bottom:8px;right:8px;left:8px;text-align:right;font-size:11px;font-weight:700;">${x.title}</div>
+    </div>`).join("");
+}
+
+// Hero
+function initHero(){
+  if(STATE.heroTimer)clearInterval(STATE.heroTimer);
+  renderHero();
+  STATE.heroTimer=setInterval(()=>{const m=DATA.movies;STATE.heroIdx=(STATE.heroIdx+1)%Math.min(4,m.length);renderHero();},4500);
+}
+
+function renderHero(){
+  const movies=DATA.movies;
+  if(!movies.length)return;
+  const m=movies[STATE.heroIdx];
+  document.getElementById("hero-bg").style.background=`linear-gradient(155deg,${m.color[0]},${m.color[1]},${m.color[2]})`;
+  document.getElementById("hero-glow").style.background=`radial-gradient(circle,${m.color[1]}55,transparent 70%)`;
+  document.getElementById("hero-emoji").textContent=m.emoji;
+  document.getElementById("hero-title").textContent=m.title;
+  document.getElementById("hero-ar").textContent=m.ar;
+  document.getElementById("hero-stars").innerHTML=`${stars(m.rating)} <span style="color:#444455;">(${m.rating})</span>`;
+  document.getElementById("hero-meta").textContent=`${m.genre} · ${m.duration}`;
+  document.getElementById("hero-badges").innerHTML=`<span style="background:#ff4fa3;color:#fff;font-size:9px;font-weight:900;padding:2px 8px;border-radius:5px;">${m.badge}</span><span style="background:rgba(255,255,255,.1);color:#ccc;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">${m.year}</span>`;
+  // Dots
+  document.getElementById("hero-dots").innerHTML=movies.slice(0,4).map((_,i)=>`<div class="hero-dot ${i===STATE.heroIdx?"active":""}" onclick="STATE.heroIdx=${i};renderHero();"></div>`).join("");
+}
+
+function playHero(){const m=DATA.movies[STATE.heroIdx];if(m)launchPlayer(m);}
+function toggleHeroList(){const m=DATA.movies[STATE.heroIdx];if(m)toggleListItem(m);}
+
+function setClientTab(tab,el){
+  document.querySelectorAll("#client-home .tab-btn").forEach(b=>b.classList.remove("active"));
+  if(el)el.classList.add("active");
+  const sm=document.getElementById("section-movies");
+  const ss=document.getElementById("section-series");
+  const sl=document.getElementById("section-live-home");
+  const sk=document.getElementById("section-kids");
+  const sc=document.getElementById("section-cats");
+  const sb=document.getElementById("sub-bar");
+  sm.style.display=(tab==="all"||tab==="movies")?"block":"none";
+  ss.style.display=(tab==="all"||tab==="series")?"block":"none";
+  sl.style.display=tab==="live"?"block":"none";
+  sk.style.display=tab==="kids"?"block":"none";
+  sc.style.display=(tab==="all")?"block":"none";
+  sb.style.display=(tab==="all")?"flex":"none";
+}
+
+function switchClientScreen(name,el){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("client-"+name).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  if(el)el.classList.add("active");
+  if(name==="mylist")renderMyList();
+}
+
+// Detail Modal
+function openDetail(id,type){
+  const items=type==="movie"?DATA.movies:type==="series"?DATA.series:DATA.channels;
+  const item=items.find(x=>x.id===id);
+  if(!item)return;
+  STATE.selectedItem=item;
+  document.getElementById("modal-poster").style.cssText=`width:96px;height:136px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:50px;background:linear-gradient(155deg,${item.color[0]},${item.color[1]},${item.color[2]});box-shadow:0 10px 32px ${item.color[1]}77;`;
+  document.getElementById("modal-poster").textContent=item.emoji;
+  document.getElementById("modal-title").textContent=item.title||item.name;
+  document.getElementById("modal-ar").textContent=item.ar||item.sub||"";
+  document.getElementById("modal-stars").innerHTML=`${stars(item.rating||0)} <span style="color:#444455;">(${item.rating||0}/10)</span>`;
+  document.getElementById("modal-meta").textContent=type==="series"?`${item.seasons} مواسم · ${item.eps} حلقة`:`${item.year||""} · ${item.duration||""}`;
+  document.getElementById("modal-genre").textContent=item.genre||"";
+  document.getElementById("modal-url-info").textContent=item.url?(item.urlType?.toUpperCase()+" ✓"):"";
+  const inList=DATA.myList.find(x=>x.id===item.id);
+  const lb=document.getElementById("modal-list-btn");
+  lb.textContent=inList?"✓ في قائمتك":"+ أضف للقائمة";
+  lb.style.background=inList?"rgba(255,79,163,.15)":"rgba(255,255,255,.07)";
+  lb.style.border=inList?"1px solid #ff4fa3":"1px solid rgba(255,255,255,.08)";
+  lb.style.color=inList?"#ff4fa3":"#aaa";
+  document.getElementById("detail-modal").classList.add("show");
+}
+
+function closeDetailModal(){document.getElementById("detail-modal").classList.remove("show");}
+function playSelected(){if(STATE.selectedItem){closeDetailModal();launchPlayer(STATE.selectedItem);}}
+function toggleSelectedList(){if(STATE.selectedItem){toggleListItem(STATE.selectedItem);openDetail(STATE.selectedItem.id,STATE.selectedItem.type);}}
+
+function toggleListItem(item){
+  let list=DATA.myList;
+  const idx=list.findIndex(x=>x.id===item.id);
+  if(idx>=0){list.splice(idx,1);showToast("تم الحذف من القائمة");}
+  else{list.push(item);showToast("تم الإضافة للقائمة ✅");}
+  DATA.myList=list;
+  renderMyList();
+}
+
+// Search
+function doSearch(){
+  const q=document.getElementById("search-inp").value.toLowerCase().trim();
+  const all=[...DATA.movies.map(m=>({...m,kind:"movie"})),...DATA.series.map(s=>({...s,kind:"series"}))];
+  if(!q){
+    document.getElementById("search-results").innerHTML=`<div style="font-size:13px;color:#444455;margin-bottom:12px;font-weight:700;">🔥 الأكثر بحثاً</div>`+
+    ["Ocean's Eleven","باب الحارة","Rambo","ورود وذنوب","The Transporter"].map(t=>`<div onclick="document.getElementById('search-inp').value='${t}';doSearch();" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px;color:#ccc;cursor:pointer;display:flex;align-items:center;gap:10px;">🔍 ${t}</div>`).join("");
+    return;
+  }
+  const res=all.filter(x=>x.title?.toLowerCase().includes(q)||x.ar?.includes(q)||x.sub?.includes(q));
+  if(!res.length){document.getElementById("search-results").innerHTML=`<div style="text-align:center;color:#444455;padding:40px 0;">لا توجد نتائج</div>`;return;}
+  document.getElementById("search-results").innerHTML=res.map(x=>`
+    <div onclick="openDetail('${x.id}','${x.kind}')" style="display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer;">
+      <div style="width:52px;height:72px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,${x.color[0]},${x.color[1]});display:flex;align-items:center;justify-content:center;font-size:28px;">${x.emoji}</div>
+      <div style="flex:1;text-align:right;"><div style="font-size:14px;font-weight:800;">${x.title}</div><div style="font-size:11px;color:#8888aa;margin-top:2px;">${x.ar||x.sub||""}</div><div style="font-size:10px;color:#444455;margin-top:4px;">${x.kind==="movie"?"🎬 فيلم":"📽️ مسلسل"} · ★${x.rating}</div></div>
+    </div>`).join("");
+}
+
+// ══════════════════════════════════════════
+//  VIDEO PLAYER
+// ══════════════════════════════════════════
+function launchPlayer(item){
+  STATE.playerItem=item;
+  const container=document.getElementById("player-container");
+  container.classList.add("show");
+  document.getElementById("player-title").textContent=item.title||item.name||"";
+  const isLive=item.type==="live";
+  document.getElementById("player-live-badge").style.display=isLive?"inline-block":"none";
+  document.getElementById("btn-seek-back").style.display=isLive?"none":"flex";
+  document.getElementById("btn-seek-fwd").style.display=isLive?"none":"flex";
+  document.getElementById("progress-wrap").style.display=isLive?"none":"block";
+  document.getElementById("no-url-emoji").textContent=item.emoji||"🎬";
+  document.getElementById("no-url-title").textContent=item.title||item.name||"";
+  const noUrl=document.getElementById("no-url-msg");
+  const video=document.getElementById("main-video");
+  if(!item.url||item.url.trim()===""){
+    noUrl.style.display="flex";video.style.display="none";return;
+  }
+  noUrl.style.display="none";video.style.display="block";
+  // Destroy old HLS
+  if(STATE.hlsInstance){STATE.hlsInstance.destroy();STATE.hlsInstance=null;}
+  const isHLS=item.url.includes(".m3u8")||item.urlType==="m3u8"||item.urlType==="m3u";
+  if(isHLS&&window.Hls?.isSupported()){
+    const hls=new Hls();STATE.hlsInstance=hls;
+    hls.loadSource(item.url);hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>{video.play().catch(()=>{});});
+  } else {
+    video.src=item.url;
+    video.play().catch(()=>{});
+  }
+  video.onplay=()=>{STATE.isPlaying=true;document.getElementById("play-btn-icon").textContent="⏸";};
+  video.onpause=()=>{STATE.isPlaying=false;document.getElementById("play-btn-icon").textContent="▶";};
+  video.onwaiting=()=>{document.getElementById("player-spinner").style.display="flex";};
+  video.oncanplay=()=>{document.getElementById("player-spinner").style.display="none";};
+  video.ontimeupdate=()=>{
+    const p=video.duration?video.currentTime/video.duration*100:0;
+    document.getElementById("progress-bar").style.width=p+"%";
+    document.getElementById("progress-thumb").style.left=p+"%";
+    document.getElementById("dur-current").textContent=fmtTime(video.currentTime);
+    document.getElementById("dur-total").textContent=fmtTime(video.duration);
+  };
+  // Auto-hide controls
+  let ctrlTimer;
+  container.onclick=()=>{
+    document.getElementById("player-controls").style.opacity="1";
+    clearTimeout(ctrlTimer);
+    ctrlTimer=setTimeout(()=>{document.getElementById("player-controls").style.opacity="0";},3500);
+  };
+}
+
+function closePlayer(){
+  const video=document.getElementById("main-video");
+  video.pause();video.src="";
+  if(STATE.hlsInstance){STATE.hlsInstance.destroy();STATE.hlsInstance=null;}
+  document.getElementById("player-container").classList.remove("show");
+  STATE.playerItem=null;
+}
+
+function togglePlay(){
+  const v=document.getElementById("main-video");
+  if(v.paused)v.play().catch(()=>{});else v.pause();
+}
+function seekBack(){const v=document.getElementById("main-video");v.currentTime=Math.max(0,v.currentTime-10);}
+function seekFwd(){const v=document.getElementById("main-video");v.currentTime=v.currentTime+10;}
+function seekTo(e){
+  const v=document.getElementById("main-video");
+  if(!v.duration)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  v.currentTime=((e.clientX-r.left)/r.width)*v.duration;
+}
+function toggleMute(){
+  const v=document.getElementById("main-video");
+  STATE.isMuted=!STATE.isMuted;v.muted=STATE.isMuted;
+  document.getElementById("mute-btn").textContent=STATE.isMuted?"🔇":"🔊";
+}
+function toggleFS(){
+  const el=document.getElementById("player-container");
+  if(!document.fullscreenElement)el.requestFullscreen?.().catch(()=>{});
+  else document.exitFullscreen?.().catch(()=>{});
+}
+function playItem(id,type){
+  const items=type==="live"?DATA.channels:type==="movie"?DATA.movies:DATA.series;
+  const item=items.find(x=>x.id===id);
+  if(item)launchPlayer(item);
+}
+
+// ══════════════════════════════════════════
+//  ADMIN APP
+// ══════════════════════════════════════════
+function initAdminApp(){setAdminTab("dash",null);}
+
+function setAdminTab(tab,el){
+  STATE.adminTab=tab;
+  document.querySelectorAll(".admin-tab").forEach(t=>t.classList.remove("active"));
+  if(el)el.classList.add("active");
+  const c=document.getElementById("admin-content");
+  if(tab==="dash")c.innerHTML=renderAdminDash();
+  else if(tab==="clients")c.innerHTML=renderAdminClients();
+  else if(tab==="codes")c.innerHTML=renderAdminCodes();
+  else if(tab==="movies")c.innerHTML=renderAdminContent("movie");
+  else if(tab==="series")c.innerHTML=renderAdminContent("series");
+  else if(tab==="channels")c.innerHTML=renderAdminChannels();
+  else if(tab==="import")c.innerHTML=renderAdminImport();
+  else if(tab==="cats")c.innerHTML=renderAdminCats();
+  else if(tab==="settings")c.innerHTML=renderAdminSettings();
+}
+
+function renderAdminDash(){
+  const cl=DATA.clients,mv=DATA.movies,sr=DATA.series,ch=DATA.channels;
+  const active=cl.filter(c=>c.status==="active").length;
+  const expired=cl.filter(c=>c.status==="expired").length;
+  const soon=cl.filter(c=>c.status==="active"&&daysLeft(c.expiresAt)<=7).length;
+  const stats=[{l:"إجمالي العملاء",v:cl.length,i:"👥",c:"#2979ff"},{l:"نشطون",v:active,i:"✅",c:"#00c853"},{l:"منتهية الصلاحية",v:expired,i:"⏰",c:"#e53935"},{l:"تنتهي قريباً",v:soon,i:"⚠️",c:"#ff9800"},{l:"الأفلام",v:mv.length,i:"🎬",c:"#ff4fa3"},{l:"المسلسلات",v:sr.length,i:"📽️",c:"#7c4dff"},{l:"القنوات",v:ch.length,i:"📺",c:"#00bcd4"}];
+  return `<div style="font-size:16px;font-weight:900;margin-bottom:18px;">📊 نظرة عامة</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
+    ${stats.map(s=>`<div class="card" style="padding:16px 14px;"><div style="font-size:26px;margin-bottom:8px;">${s.i}</div><div style="font-size:24px;font-weight:900;color:${s.c};">${s.v}</div><div style="font-size:11px;color:#8888aa;margin-top:2px;">${s.l}</div></div>`).join("")}
+  </div>
+  <div style="font-size:14px;font-weight:800;margin-bottom:12px;">🕐 آخر العملاء</div>
+  ${[...cl].reverse().slice(0,4).map(c=>`<div class="card" style="padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:6px;"><span class="pill pill-${c.status==="active"?"green":"red"}">${c.status==="active"?"نشط":"منتهي"}</span><span class="pill pill-blue">${daysLeft(c.expiresAt)} يوم</span></div><div style="text-align:right;"><div style="font-size:13px;font-weight:800;">${c.name}</div><div style="font-size:10px;color:#8888aa;">${c.username}</div></div></div>`).join("")}`;
+}
+
+function renderAdminClients(){
+  const cl=DATA.clients;
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <button class="btn btn-sm" onclick="showAddClientModal()" style="margin-bottom:0;width:auto;">➕ إضافة عميل</button>
+    <div style="font-size:15px;font-weight:900;">👥 العملاء (${cl.length})</div>
+  </div>
+  ${cl.map(c=>{
+    const left=daysLeft(c.expiresAt);
+    return `<div class="card" style="padding:14px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="pill pill-${c.status==="active"?"green":c.status==="expired"?"red":"orange"}" style="font-size:9px;">${c.status==="active"?"● نشط":c.status==="expired"?"● منتهي":"● موقوف"}</span><span class="pill pill-${left<=3?"red":left<=30?"orange":"blue"}" style="font-size:9px;">${left} يوم</span><span class="pill pill-purple" style="font-size:9px;">${c.maxConn} أجهزة</span></div>
+        <div style="text-align:right;"><div style="font-size:14px;font-weight:900;">${c.name}</div><div style="font-size:11px;color:#8888aa;">${c.username} · ${c.expiresAt}</div></div>
+      </div>
+      <div style="background:rgba(0,0,0,.35);border-radius:10px;padding:10px 12px;margin-bottom:10px;">
+        <div class="copy-field" onclick="copyText('${c.activationCode}')" style="display:flex;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.08);"><span style="font-family:monospace;font-size:11px;color:#ff4fa3;">${c.activationCode}</span><span style="font-size:10px;color:#444455;">كود التفعيل</span></div>
+        <div class="copy-field" onclick="copyText('${c.username} / ${c.password}')" style="display:flex;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.08);"><span style="font-family:monospace;font-size:10px;color:#aaa;">${c.username} / ${c.password}</span><span style="font-size:10px;color:#444455;">يوزر/باسورد</span></div>
+        <div class="copy-field" onclick="copyText('${c.xtreamUser} / ${c.xtreamPass}')" style="display:flex;justify-content:space-between;"><span style="font-family:monospace;font-size:10px;color:#aaa;">${c.xtreamUser} / ${c.xtreamPass}</span><span style="font-size:10px;color:#444455;">Xtream</span></div>
+        <div style="font-size:9px;color:#333;text-align:center;margin-top:4px;">اضغط لنسخ</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-blue btn-sm" onclick="showRenewModal('${c.id}')" style="margin-bottom:0;">🔄 تجديد</button>
+        <button class="btn btn-sm" style="margin-bottom:0;background:${c.status==="active"?"linear-gradient(135deg,#ff9800,#e65100)":"linear-gradient(135deg,#00c853,#00897b)"};" onclick="toggleClient('${c.id}')">${c.status==="active"?"⏸ وقف":"▶ تفعيل"}</button>
+        <button class="btn btn-sm btn-gray" onclick="resetClientCode('${c.id}')" style="margin-bottom:0;">🎟️ كود جديد</button>
+        <button class="btn btn-red btn-sm" onclick="deleteClient('${c.id}')" style="margin-bottom:0;">🗑️</button>
+      </div>
+    </div>`;}).join("")}`;
+}
+
+function showAddClientModal(){
+  document.getElementById("admin-modal-title").textContent="➕ إضافة عميل جديد";
+  document.getElementById("admin-modal-body").innerHTML=`
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">الاسم الكامل</div><input class="inp" id="nc-name" placeholder="أحمد محمد">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">اسم المستخدم</div><input class="inp" id="nc-user" placeholder="ahmed2026">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">كلمة المرور</div><input class="inp" id="nc-pass" type="password" placeholder="••••••••">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">مدة الاشتراك</div>
+    <select class="sel" id="nc-days">${DURATIONS.map(d=>`<option value="${d.days}">${d.label}</option>`).join("")}</select>
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">الحد الأقصى للأجهزة</div>
+    <select class="sel" id="nc-conn">${[1,2,3,5].map(n=>`<option value="${n}">${n} ${n===1?"جهاز":"أجهزة"}</option>`).join("")}</select>
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">ملاحظات</div><input class="inp" id="nc-notes" placeholder="اختياري...">
+    <hr style="border-color:rgba(255,255,255,.08);margin:16px 0;">
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-gray" onclick="closeAdminModal()" style="flex:1;">إلغاء</button>
+      <button class="btn" onclick="addClient()" style="flex:1;">✅ حفظ</button>
+    </div>`;
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function addClient(){
+  const name=document.getElementById("nc-name").value.trim();
+  const user=document.getElementById("nc-user").value.trim();
+  const pass=document.getElementById("nc-pass").value;
+  const days=parseInt(document.getElementById("nc-days").value);
+  const conn=parseInt(document.getElementById("nc-conn").value);
+  const notes=document.getElementById("nc-notes").value;
+  if(!name||!user||!pass){showToast("يرجى ملء جميع الحقول","error");return;}
+  const cl=DATA.clients;
+  cl.push({id:uid(),name,username:user,password:pass,activationCode:genCode(),xtreamUser:user+"_xt",xtreamPass:uid().slice(0,8),xtreamUrl:"http://matrix.tv:8080",createdAt:new Date().toISOString().split("T")[0],expiresAt:addDays(days),days,status:"active",maxConn:conn,notes});
+  DATA.clients=cl;
+  closeAdminModal();showToast(`تم إضافة ${name} ✅`);
+  setAdminTab("clients",null);
+}
+
+function showRenewModal(id){
+  document.getElementById("admin-modal-title").textContent="🔄 تجديد الاشتراك";
+  document.getElementById("admin-modal-body").innerHTML=`
+    <div style="font-size:12px;color:#8888aa;margin-bottom:14px;text-align:center;">اختر مدة التجديد:</div>
+    ${DURATIONS.map(d=>`<button class="btn btn-green" onclick="renewClient('${id}',${d.days})">🔄 تجديد ${d.label}</button>`).join("")}
+    <button class="btn btn-gray" onclick="closeAdminModal()">إغلاق</button>`;
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function renewClient(id,days){
+  const cl=DATA.clients;
+  const idx=cl.findIndex(c=>c.id===id);
+  if(idx>=0){cl[idx].expiresAt=addDays(days);cl[idx].status="active";}
+  DATA.clients=cl;closeAdminModal();showToast(`تم التجديد ${days} يوم ✅`);setAdminTab("clients",null);
+}
+
+function toggleClient(id){
+  const cl=DATA.clients;const idx=cl.findIndex(c=>c.id===id);
+  if(idx>=0)cl[idx].status=cl[idx].status==="active"?"suspended":"active";
+  DATA.clients=cl;setAdminTab("clients",null);
+}
+
+function deleteClient(id){
+  if(!confirm("هل تريد حذف هذا العميل؟"))return;
+  DATA.clients=DATA.clients.filter(c=>c.id!==id);
+  showToast("تم الحذف","error");setAdminTab("clients",null);
+}
+
+function resetClientCode(id){
+  const cl=DATA.clients;const idx=cl.findIndex(c=>c.id===id);
+  if(idx>=0)cl[idx].activationCode=genCode();
+  DATA.clients=cl;showToast("تم إنشاء كود جديد ✅");setAdminTab("clients",null);
+}
+
+function renderAdminCodes(){
+  const cl=DATA.clients;
+  return `<div style="font-size:15px;font-weight:900;margin-bottom:18px;">🎟️ أكواد التفعيل</div>
+  <div class="card" style="padding:16px;margin-bottom:20px;">
+    <div style="font-size:13px;font-weight:800;margin-bottom:14px;">⚡ توليد أكواد جديدة</div>
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">مدة الاشتراك</div>
+    <select class="sel" id="gen-days">${DURATIONS.map(d=>`<option value="${d.days}">${d.label}</option>`).join("")}</select>
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">عدد الأكواد</div>
+    <select class="sel" id="gen-count">${[1,5,10,20,50].map(n=>`<option value="${n}">${n} كود</option>`).join("")}</select>
+    <button class="btn" onclick="generateCodes()">⚡ توليد الأكواد</button>
+  </div>
+  <div id="generated-codes"></div>
+  <div style="font-size:14px;font-weight:800;margin-bottom:12px;margin-top:20px;">📋 أكواد العملاء</div>
+  ${cl.map(c=>`<div class="copy-field card" onclick="copyText('${c.activationCode}')" style="padding:11px 14px;margin-bottom:8px;cursor:pointer;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><div><span class="pill pill-${c.status==="active"?"green":"red"}" style="font-size:9px;">${daysLeft(c.expiresAt)} يوم</span></div><div style="font-size:12px;font-weight:800;">${c.name}</div></div><div style="font-family:monospace;font-size:12px;color:#ff4fa3;">${c.activationCode}</div></div>`).join("")}`;
+}
+
+function generateCodes(){
+  const days=parseInt(document.getElementById("gen-days").value);
+  const count=parseInt(document.getElementById("gen-count").value);
+  const codes=Array.from({length:count},()=>({code:genCode(),days,used:false,created:new Date().toISOString().split("T")[0]}));
+  document.getElementById("generated-codes").innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span style="font-size:13px;font-weight:800;">الأكواد المولّدة (${count})</span>
+    </div>
+    ${codes.map(c=>`<div class="copy-field" onclick="copyText('${c.code}')" style="background:rgba(255,79,163,.07);border:1px solid rgba(255,79,163,.2);border-radius:10px;padding:11px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;"><div style="display:flex;gap:6px;"><span class="pill pill-green" style="font-size:9px;">متاح</span><span class="pill pill-blue" style="font-size:9px;">${c.days} يوم</span></div><div style="font-family:monospace;font-size:13px;font-weight:700;color:#ff4fa3;letter-spacing:1px;">${c.code}</div></div>`).join("")}`;
+  showToast(`تم توليد ${count} كود ✅`);
+}
+
+function renderAdminContent(kind){
+  const items=kind==="movie"?DATA.movies:DATA.series;
+  const icon=kind==="movie"?"🎬":"📽️";
+  const label=kind==="movie"?"فيلم":"مسلسل";
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <button class="btn btn-sm" onclick="showAddContentModal('${kind}')" style="margin-bottom:0;width:auto;">➕ إضافة ${label}</button>
+    <div style="font-size:15px;font-weight:900;">${icon} (${items.length})</div>
+  </div>
+  ${items.map(item=>`<div class="card" style="padding:12px 14px;margin-bottom:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-blue btn-sm" onclick="showEditContentModal('${item.id}','${kind}')" style="margin-bottom:0;">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="deleteContent('${item.id}','${kind}')" style="margin-bottom:0;">🗑️</button>
+      </div>
+      <div style="text-align:right;flex:1;margin-right:10px;">
+        <div style="font-size:13px;font-weight:800;">${item.emoji} ${item.title}</div>
+        <div style="font-size:10px;color:#8888aa;margin-top:2px;">${item.genre||""} · ★${item.rating}${kind==="series"?` · ${item.eps} حلقة`:` · ${item.year||""}`}</div>
+        <div style="font-size:9px;margin-top:3px;">${item.url?`<span style="color:#ff4fa3;font-family:monospace;">${item.urlType?.toUpperCase()}: ${item.url.slice(0,28)}...</span>`:`<span style="color:#333;">لا يوجد رابط</span>`}</div>
+      </div>
+      <div style="font-size:22px;">${item.emoji}</div>
+    </div>
+  </div>`).join("")}`;
+}
+
+function contentFormHTML(kind,item){
+  const isEdit=!!item;
+  const GENRES=kind==="movie"?["أكشن","دراما","كوميدي","رومانسي","إثارة","رعب","خيال علمي","وثائقي","تاريخي","مغامرة"]:["دراما","رومانسي","كوميدي","إثارة","غموض","تاريخي","اجتماعي","جريمة"];
+  const EMOJIS=["🎬","🚗","💥","🃏","🕵️","👁️","🌹","🎮","🏘️","🌙","💕","🏙️","❤️","📚","🌳","🏚️","🎭","🌍","🎯","🎲"];
+  const BADGES=["HD","4K","NEW","CAM","TS"];
+  const UTYPES=[{id:"direct",l:"🔗 مباشر"},{id:"m3u",l:"📋 M3U"},{id:"m3u8",l:"📡 M3U8"},{id:"xtream",l:"⚡ Xtream"}];
+  const v=item||{title:"",ar:"",genre:"",rating:"7.5",year:"2024",duration:"1س 30د",eps:"12",seasons:"1",emoji:"🎬",url:"",urlType:"direct",badge:"HD"};
+  return `
+    <div style="display:flex;gap:10px;">
+      <div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">العنوان الإنجليزي</div><input class="inp" id="cf-title" value="${v.title||""}"></div>
+      <div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">العنوان العربي</div><input class="inp" id="cf-ar" value="${v.ar||v.sub||""}"></div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">التصنيف</div><select class="sel" id="cf-genre">${GENRES.map(g=>`<option value="${g}" ${v.genre===g?"selected":""}>${g}</option>`).join("")}</select></div>
+      <div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">التقييم</div><input class="inp" id="cf-rating" value="${v.rating||7.5}"></div>
+    </div>
+    ${kind==="movie"?`<div style="display:flex;gap:10px;"><div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">السنة</div><input class="inp" id="cf-year" value="${v.year||2024}"></div><div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">المدة</div><input class="inp" id="cf-dur" value="${v.duration||""}"></div></div>`:
+    `<div style="display:flex;gap:10px;"><div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">الحلقات</div><input class="inp" id="cf-eps" value="${v.eps||12}"></div><div style="flex:1;"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">المواسم</div><input class="inp" id="cf-seasons" value="${v.seasons||1}"></div></div>`}
+    ${kind==="movie"?`<div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">الجودة</div><div style="display:flex;gap:6px;">${BADGES.map(b=>`<div onclick="document.querySelectorAll('.badge-opt').forEach(x=>x.style.background='rgba(255,255,255,.06)');this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';document.getElementById('cf-badge').value='${b}';" class="badge-opt" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;background:${(v.badge||"HD")===b?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:#fff;">${b}</div>`).join("")}<input type="hidden" id="cf-badge" value="${v.badge||"HD"}"></div></div>`:""}
+    <div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${EMOJIS.map(e=>`<div onclick="document.querySelectorAll('.emoji-opt').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('cf-emoji').value='${e}';" class="emoji-opt" style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;background:${(v.emoji||"🎬")===e?"rgba(255,79,163,.25)":"rgba(255,255,255,.05)"};">${e}</div>`).join("")}<input type="hidden" id="cf-emoji" value="${v.emoji||"🎬"}"></div></div>
+    <div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">نوع الرابط</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">${UTYPES.map(t=>`<div onclick="document.querySelectorAll('.ut-opt').forEach(x=>{x.style.background='rgba(255,255,255,.06)';x.style.color='#8888aa';});this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';this.style.color='#fff';document.getElementById('cf-urltype').value='${t.id}';" class="ut-opt" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:${(v.urlType||"direct")===t.id?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:${(v.urlType||"direct")===t.id?"#fff":"#8888aa"};">${t.l}</div>`).join("")}<input type="hidden" id="cf-urltype" value="${v.urlType||"direct"}"></div>
+    <input class="inp inp-mono" id="cf-url" placeholder="أدخل رابط البث..." value="${v.url||""}"></div>
+    <hr style="border-color:rgba(255,255,255,.08);margin:16px 0;">
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-gray" onclick="closeAdminModal()" style="flex:1;">إلغاء</button>
+      <button class="btn" onclick="saveContent('${kind}','${isEdit?item.id:""}')" style="flex:1;">✅ ${isEdit?"حفظ التعديل":"إضافة"}</button>
+    </div>`;
+}
+
+function showAddContentModal(kind){
+  document.getElementById("admin-modal-title").textContent=`➕ إضافة ${kind==="movie"?"فيلم":"مسلسل"}`;
+  document.getElementById("admin-modal-body").innerHTML=contentFormHTML(kind,null);
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function showEditContentModal(id,kind){
+  const items=kind==="movie"?DATA.movies:DATA.series;
+  const item=items.find(x=>x.id===id);
+  if(!item)return;
+  document.getElementById("admin-modal-title").textContent=`✏️ تعديل: ${item.title}`;
+  document.getElementById("admin-modal-body").innerHTML=contentFormHTML(kind,item);
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function saveContent(kind,editId){
+  const title=document.getElementById("cf-title").value.trim();
+  if(!title){showToast("يرجى إدخال العنوان","error");return;}
+  const base={title,ar:document.getElementById("cf-ar").value,genre:document.getElementById("cf-genre").value,rating:parseFloat(document.getElementById("cf-rating").value)||7.5,emoji:document.getElementById("cf-emoji").value,url:document.getElementById("cf-url").value,urlType:document.getElementById("cf-urltype").value,type:kind,color:randColor()};
+  if(kind==="movie"){base.year=document.getElementById("cf-year").value;base.duration=document.getElementById("cf-dur").value;base.badge=document.getElementById("cf-badge").value;}
+  else{base.sub=base.ar;base.eps=parseInt(document.getElementById("cf-eps").value)||12;base.seasons=parseInt(document.getElementById("cf-seasons").value)||1;}
+  if(editId){
+    const items=kind==="movie"?DATA.movies:DATA.series;
+    const idx=items.findIndex(x=>x.id===editId);
+    if(idx>=0){items[idx]={...items[idx],...base};}
+    if(kind==="movie")DATA.movies=items;else DATA.series=items;
+    showToast("تم التعديل ✅");
+  } else {
+    const items=kind==="movie"?DATA.movies:DATA.series;
+    items.push({id:uid(),...base});
+    if(kind==="movie")DATA.movies=items;else DATA.series=items;
+    showToast("تم الإضافة ✅");
+  }
+  closeAdminModal();setAdminTab(kind==="movie"?"movies":"series",null);
+}
+
+function deleteContent(id,kind){
+  if(!confirm("هل تريد الحذف؟"))return;
+  if(kind==="movie")DATA.movies=DATA.movies.filter(x=>x.id!==id);
+  else DATA.series=DATA.series.filter(x=>x.id!==id);
+  showToast("تم الحذف","error");setAdminTab(kind==="movie"?"movies":"series",null);
+}
+
+function renderAdminChannels(){
+  const ch=DATA.channels;
+  const UTYPES=[{id:"m3u8",l:"📡 M3U8"},{id:"m3u",l:"📋 M3U"},{id:"xtream",l:"⚡ Xtream"},{id:"direct",l:"🔗 مباشر"}];
+  const CATS=["عربي","رياضة","أخبار","أطفال","أفلام","وثائقي","ترفيه","ديني","موسيقى"];
+  const EMOJIS=["📺","⚽","📰","🧒","🎬","🔍","🎭","📖","🎵","🌍","💼","🏆","🌟","🏙️","📡"];
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <button class="btn btn-sm" onclick="showAddChannelModal()" style="margin-bottom:0;width:auto;">➕ إضافة قناة</button>
+    <div style="font-size:15px;font-weight:900;">📺 القنوات (${ch.length})</div>
+  </div>
+  ${ch.map(c=>`<div class="card" style="padding:12px 14px;margin-bottom:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-blue btn-sm" onclick="showEditChannelModal('${c.id}')" style="margin-bottom:0;">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="deleteChannel('${c.id}')" style="margin-bottom:0;">🗑️</button>
+      </div>
+      <div style="text-align:right;flex:1;margin-right:10px;">
+        <div style="font-size:13px;font-weight:800;">${c.emoji} ${c.name}</div>
+        <div style="font-size:10px;color:#8888aa;margin-top:2px;">${c.category} · ${c.urlType?.toUpperCase()}</div>
+        ${c.url?`<div style="font-size:9px;color:#ff4fa3;font-family:monospace;margin-top:3px;direction:ltr;text-align:left;">${c.url.slice(0,32)}...</div>`:`<div style="font-size:9px;color:#333;">لا يوجد رابط</div>`}
+      </div>
+      <span style="background:#e53935;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:3px;">LIVE</span>
+    </div>
+  </div>`).join("")}`;
+}
+
+function channelFormHTML(item){
+  const CATS=["عربي","رياضة","أخبار","أطفال","أفلام","وثائقي","ترفيه","ديني","موسيقى"];
+  const EMOJIS=["📺","⚽","📰","🧒","🎬","🔍","🎭","📖","🎵","🌍","💼","🏆","🌟","🏙️","📡"];
+  const UTYPES=[{id:"m3u8",l:"📡 M3U8"},{id:"m3u",l:"📋 M3U"},{id:"xtream",l:"⚡ Xtream"},{id:"direct",l:"🔗 مباشر"}];
+  const v=item||{name:"",category:"عربي",emoji:"📺",url:"",urlType:"m3u8"};
+  return `<div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">اسم القناة</div><input class="inp" id="ch-name" value="${v.name||""}">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">التصنيف</div><select class="sel" id="ch-cat">${CATS.map(c=>`<option value="${c}" ${v.category===c?"selected":""}>${c}</option>`).join("")}</select>
+    <div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${EMOJIS.map(e=>`<div onclick="document.querySelectorAll('.ch-emoji-opt').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('ch-emoji').value='${e}';" class="ch-emoji-opt" style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;background:${(v.emoji||"📺")===e?"rgba(255,79,163,.25)":"rgba(255,255,255,.05)"};">${e}</div>`).join("")}<input type="hidden" id="ch-emoji" value="${v.emoji||"📺"}"></div></div>
+    <div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">نوع الرابط</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">${UTYPES.map(t=>`<div onclick="document.querySelectorAll('.ch-ut-opt').forEach(x=>{x.style.background='rgba(255,255,255,.06)';x.style.color='#8888aa';});this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';this.style.color='#fff';document.getElementById('ch-urltype').value='${t.id}';" class="ch-ut-opt" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:${(v.urlType||"m3u8")===t.id?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:${(v.urlType||"m3u8")===t.id?"#fff":"#8888aa"};">${t.l}</div>`).join("")}<input type="hidden" id="ch-urltype" value="${v.urlType||"m3u8"}"></div>
+    <input class="inp inp-mono" id="ch-url" placeholder="رابط البث..." value="${v.url||""}"></div>
+    <hr style="border-color:rgba(255,255,255,.08);margin:16px 0;">
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-gray" onclick="closeAdminModal()" style="flex:1;">إلغاء</button>
+      <button class="btn" onclick="saveChannel('${item?.id||""}')" style="flex:1;">✅ ${item?"حفظ التعديل":"إضافة القناة"}</button>
+    </div>`;
+}
+
+function showAddChannelModal(){
+  document.getElementById("admin-modal-title").textContent="➕ قناة جديدة";
+  document.getElementById("admin-modal-body").innerHTML=channelFormHTML(null);
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function showEditChannelModal(id){
+  const item=DATA.channels.find(c=>c.id===id);if(!item)return;
+  document.getElementById("admin-modal-title").textContent=`✏️ تعديل: ${item.name}`;
+  document.getElementById("admin-modal-body").innerHTML=channelFormHTML(item);
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function saveChannel(editId){
+  const name=document.getElementById("ch-name").value.trim();
+  if(!name){showToast("يرجى إدخال اسم القناة","error");return;}
+  const base={name,category:document.getElementById("ch-cat").value,emoji:document.getElementById("ch-emoji").value,url:document.getElementById("ch-url").value,urlType:document.getElementById("ch-urltype").value,type:"live",viewers:"0"};
+  const ch=DATA.channels;
+  if(editId){const idx=ch.findIndex(x=>x.id===editId);if(idx>=0)ch[idx]={...ch[idx],...base};showToast("تم التعديل ✅");}
+  else{ch.push({id:uid(),...base});showToast("تم الإضافة ✅");}
+  DATA.channels=ch;closeAdminModal();setAdminTab("channels",null);
+}
+
+function deleteChannel(id){
+  if(!confirm("حذف القناة؟"))return;
+  DATA.channels=DATA.channels.filter(c=>c.id!==id);
+  showToast("تم الحذف","error");setAdminTab("channels",null);
+}
+
+function renderAdminImport(){
+  return `
+  <div style="font-size:15px;font-weight:900;margin-bottom:6px;">📥 استيراد القنوات</div>
+  <div style="font-size:12px;color:#8888aa;margin-bottom:18px;">أضف مئات القنوات دفعة واحدة عبر M3U أو Xtream</div>
+
+  <!-- Import type tabs -->
+  <div style="display:flex;gap:6px;margin-bottom:16px;">
+    <div onclick="setImportType('m3u',this)" id="itype-m3u" style="flex:1;text-align:center;padding:10px;border-radius:12px;cursor:pointer;background:linear-gradient(135deg,#ff4fa3,#ff8c42);color:#fff;font-size:12px;font-weight:800;">
+      📋 رابط M3U
+    </div>
+    <div onclick="setImportType('xtream',this)" id="itype-xtream" style="flex:1;text-align:center;padding:10px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,.07);color:#8888aa;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.08);">
+      ⚡ Xtream Code
+    </div>
+  </div>
+
+  <!-- M3U Section -->
+  <div id="import-m3u">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">رابط ملف M3U أو M3U8</div>
+    <input class="inp inp-mono" id="m3u-url" placeholder="http://server.com/playlist.m3u">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">التصنيف الافتراضي للقنوات</div>
+    <select class="sel" id="m3u-cat">
+      <option value="عربي">عربي</option>
+      <option value="رياضة">رياضة</option>
+      <option value="أخبار">أخبار</option>
+      <option value="أفلام">أفلام</option>
+      <option value="أطفال">أطفال</option>
+      <option value="وثائقي">وثائقي</option>
+      <option value="ترفيه">ترفيه</option>
+      <option value="ديني">ديني</option>
+    </select>
+    <button class="btn" onclick="importM3U()">📥 استيراد القنوات من M3U</button>
+  </div>
+
+  <!-- Xtream Section -->
+  <div id="import-xtream" style="display:none;">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">رابط السيرفر</div>
+    <input class="inp inp-mono" id="xt-url" placeholder="http://server.com:8080">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">اسم المستخدم</div>
+    <input class="inp inp-mono" id="xt-user" placeholder="username">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">كلمة المرور</div>
+    <input class="inp" id="xt-pass" type="password" placeholder="••••••••">
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">نوع المحتوى</div>
+    <select class="sel" id="xt-type">
+      <option value="live">📺 قنوات مباشرة</option>
+      <option value="vod">🎬 أفلام VOD</option>
+      <option value="series">📽️ مسلسلات</option>
+    </select>
+    <button class="btn" onclick="importXtream()">⚡ استيراد من Xtream</button>
+  </div>
+
+  <!-- Progress -->
+  <div id="import-progress" style="display:none;margin-top:10px;">
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center;">
+      <div style="width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top:3px solid #ff4fa3;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
+      <div id="import-status" style="font-size:13px;font-weight:700;color:#ff4fa3;">جاري الاستيراد...</div>
+      <div id="import-count" style="font-size:11px;color:#8888aa;margin-top:4px;"></div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="import-results" style="display:none;margin-top:10px;">
+    <div style="background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;">
+      <div style="font-size:32px;margin-bottom:8px;">✅</div>
+      <div id="import-success-msg" style="font-size:14px;font-weight:800;color:#00c853;"></div>
+    </div>
+    <div id="import-preview" style="max-height:300px;overflow-y:auto;"></div>
+    <button class="btn btn-green" onclick="confirmImport()" style="margin-top:10px;">✅ حفظ كل القنوات</button>
+    <button class="btn btn-gray" onclick="cancelImport()">إلغاء</button>
+  </div>`;
+}
+
+let importedChannels = [];
+
+function setImportType(type, el) {
+  document.getElementById("import-m3u").style.display = type==="m3u"?"block":"none";
+  document.getElementById("import-xtream").style.display = type==="xtream"?"block":"none";
+  document.querySelectorAll("#itype-m3u, #itype-xtream").forEach(b=>{
+    b.style.background="rgba(255,255,255,.07)";
+    b.style.color="#8888aa";
+    b.style.border="1px solid rgba(255,255,255,.08)";
+  });
+  el.style.background="linear-gradient(135deg,#ff4fa3,#ff8c42)";
+  el.style.color="#fff";
+  el.style.border="none";
+}
+
+function parseM3U(text, defaultCat) {
+  const lines = text.split('\n');
+  const channels = [];
+  const EMOJIS = ["📺","🎬","⚽","📰","🌟","🎵","🎭","🌍","💼","🏆"];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    if (line.startsWith('#EXTINF')) {
+      const nameMath = line.match(/,(.+)$/);
+      const groupMatch = line.match(/group-title="([^"]+)"/);
+      const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+      const name = nameMath ? nameMath[1].trim() : "قناة";
+      const group = groupMatch ? groupMatch[1] : defaultCat;
+      const url = lines[i+1]?.trim();
+      if (url && !url.startsWith('#')) {
+        channels.push({
+          id: uid(),
+          name,
+          category: group || defaultCat,
+          emoji: EMOJIS[Math.floor(Math.random()*EMOJIS.length)],
+          url,
+          urlType: url.includes('.m3u8') ? 'm3u8' : 'direct',
+          type: 'live',
+          viewers: '0'
+        });
+        i += 2;
+        continue;
+      }
+    }
+    i++;
+  }
+  return channels;
+}
+
+async function importM3U() {
+  const url = document.getElementById("m3u-url").value.trim();
+  const cat = document.getElementById("m3u-cat").value;
+  if (!url) { showToast("يرجى إدخال رابط M3U","error"); return; }
+  document.getElementById("import-progress").style.display="block";
+  document.getElementById("import-results").style.display="none";
+  document.getElementById("import-status").textContent="جاري تحميل الملف...";
+  document.getElementById("import-count").textContent="";
+  try {
+    // Try fetch with CORS proxy
+    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error("فشل التحميل");
+    const text = await res.text();
+    if (!text.includes('#EXTM3U') && !text.includes('#EXTINF')) throw new Error("الملف غير صحيح");
+    document.getElementById("import-status").textContent="جاري تحليل القنوات...";
+    importedChannels = parseM3U(text, cat);
+    showImportResults();
+  } catch(e) {
+    document.getElementById("import-progress").style.display="none";
+    showToast("تعذر تحميل الرابط — تأكد من صحة الرابط","error");
+  }
+}
+
+async function importXtream() {
+  const url = document.getElementById("xt-url").value.trim().replace(/\/$/, '');
+  const user = document.getElementById("xt-user").value.trim();
+  const pass = document.getElementById("xt-pass").value;
+  const type = document.getElementById("xt-type").value;
+  if (!url||!user||!pass) { showToast("يرجى ملء جميع الحقول","error"); return; }
+  document.getElementById("import-progress").style.display="block";
+  document.getElementById("import-results").style.display="none";
+  document.getElementById("import-status").textContent="جاري الاتصال بالسيرفر...";
+  document.getElementById("import-count").textContent="";
+  try {
+    let apiUrl;
+    if (type==="live") apiUrl=`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=ts`;
+    else if (type==="vod") apiUrl=`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=mpegts&action=vod`;
+    else apiUrl=`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=mpegts&action=series`;
+    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiUrl);
+    document.getElementById("import-status").textContent="جاري تحميل القائمة...";
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error("فشل الاتصال");
+    const text = await res.text();
+    if (!text.includes('#EXTINF')) throw new Error("لا توجد قنوات");
+    document.getElementById("import-status").textContent="جاري تحليل القنوات...";
+    importedChannels = parseM3U(text, type==="live"?"عربي":type==="vod"?"أفلام":"مسلسلات");
+    showImportResults();
+  } catch(e) {
+    document.getElementById("import-progress").style.display="none";
+    showToast("تعذر الاتصال — تأكد من بيانات Xtream","error");
+  }
+}
+
+function showImportResults() {
+  document.getElementById("import-progress").style.display="none";
+  document.getElementById("import-results").style.display="block";
+  document.getElementById("import-success-msg").textContent=`تم العثور على ${importedChannels.length} قناة جاهزة للاستيراد`;
+  const preview = importedChannels.slice(0,20);
+  document.getElementById("import-preview").innerHTML=`
+    <div style="font-size:12px;color:#8888aa;margin-bottom:10px;font-weight:700;">معاينة أول 20 قناة:</div>
+    ${preview.map((ch,i)=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:6px;">
+        <span style="font-size:10px;color:#8888aa;">${ch.category}</span>
+        <div style="text-align:right;flex:1;margin-right:10px;">
+          <div style="font-size:12px;font-weight:700;">${ch.emoji} ${ch.name}</div>
+          <div style="font-size:9px;color:#ff4fa3;font-family:monospace;">${ch.url.slice(0,30)}...</div>
+        </div>
+        <span style="font-size:10px;color:#555;">${i+1}</span>
+      </div>`).join('')}
+    ${importedChannels.length>20?`<div style="text-align:center;color:#8888aa;font-size:11px;padding:10px;">... و ${importedChannels.length-20} قناة أخرى</div>`:''}`;
+}
+
+function confirmImport() {
+  if (!importedChannels.length) return;
+  const existing = DATA.channels;
+  const merged = [...existing, ...importedChannels];
+  DATA.channels = merged;
+  showToast(`تم استيراد ${importedChannels.length} قناة بنجاح ✅`);
+  importedChannels = [];
+  setAdminTab("channels", null);
+}
+
+function cancelImport() {
+  importedChannels = [];
+  document.getElementById("import-results").style.display="none";
+}
+
+function renderAdminCats(){
+  const cats=DATA.cats;
+  const ICONS=["📺","🎬","📽️","🧒","📻","📖","🎵","🎓","🔍","⚽","📰","🎭","🌍","💼","🏆","🎪","🎠","🎡"];
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <button class="btn btn-sm" onclick="showAddCatModal()" style="margin-bottom:0;width:auto;">➕ إضافة تصنيف</button>
+    <div style="font-size:15px;font-weight:900;">🗂️ التصنيفات (${cats.length})</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    ${cats.map(c=>`<div class="card" style="padding:14px 12px;display:flex;align-items:center;justify-content:space-between;">
+      <span onclick="deleteCat('${c.id}')" style="color:#e53935;cursor:pointer;font-size:16px;">✕</span>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:700;">${c.name}</span><span style="font-size:24px;">${c.icon}</span></div>
+    </div>`).join("")}
+  </div>`;
+}
+
+function showAddCatModal(){
+  const ICONS=["📺","🎬","📽️","🧒","📻","📖","🎵","🎓","🔍","⚽","📰","🎭","🌍","💼","🏆","🎪","🎠","🎡"];
+  document.getElementById("admin-modal-title").textContent="➕ تصنيف جديد";
+  document.getElementById("admin-modal-body").innerHTML=`
+    <div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700;">اسم التصنيف</div><input class="inp" id="cat-name" placeholder="مثل: أفلام هندية">
+    <div style="margin-bottom:14px;"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700;">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:7px;">${ICONS.map(e=>`<div onclick="document.querySelectorAll('.cat-icon-opt').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('cat-icon').value='${e}';" class="cat-icon-opt" style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;background:rgba(255,255,255,.05);">${e}</div>`).join("")}<input type="hidden" id="cat-icon" value="📁"></div></div>
+    <hr style="border-color:rgba(255,255,255,.08);margin:16px 0;">
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-gray" onclick="closeAdminModal()" style="flex:1;">إلغاء</button>
+      <button class="btn" onclick="addCat()" style="flex:1;">✅ إضافة</button>
+    </div>`;
+  document.getElementById("admin-modal").classList.add("show");
+}
+
+function addCat(){
+  const name=document.getElementById("cat-name").value.trim();
+  const icon=document.getElementById("cat-icon").value;
+  if(!name){showToast("يرجى إدخال الاسم","error");return;}
+  const cats=DATA.cats;cats.push({id:uid(),name,icon});DATA.cats=cats;
+  closeAdminModal();showToast("تم الإضافة ✅");setAdminTab("cats",null);
+}
+
+function deleteCat(id){
+  DATA.cats=DATA.cats.filter(c=>c.id!==id);
+  showToast("تم الحذف","error");setAdminTab("cats",null);
+}
+
+function renderAdminSettings(){
+  return `<div style="font-size:15px;font-weight:900;margin-bottom:18px;">⚙️ إعدادات النظام</div>
+  <div class="card" style="padding:16px;margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:800;margin-bottom:14px;">🔐 بيانات الأدمن</div>
+    ${[{l:"يوزر الأدمن",v:ADMIN_CREDS.username},{l:"الكود السري",v:ADMIN_CREDS.secret},{l:"الباسورد",v:"••••••••"}].map(r=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);"><span style="font-family:monospace;font-size:12px;color:#ff4fa3;">${r.v}</span><span style="font-size:12px;color:#8888aa;">${r.l}</span></div>`).join("")}
+  </div>
+  <div class="card" style="padding:16px;margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:800;margin-bottom:14px;">📊 إحصائيات</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      ${[{l:"العملاء",v:DATA.clients.length,c:"#2979ff"},{l:"الأفلام",v:DATA.movies.length,c:"#ff4fa3"},{l:"القنوات",v:DATA.channels.length,c:"#00bcd4"}].map(s=>`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:900;color:${s.c};">${s.v}</div><div style="font-size:10px;color:#8888aa;">${s.l}</div></div>`).join("")}
+    </div>
+  </div>
+  <div style="background:rgba(229,57,53,.07);border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:16px;">
+    <div style="font-size:13px;font-weight:800;margin-bottom:12px;color:#ff6b6b;">⚠️ منطقة الخطر</div>
+    <button class="btn btn-orange" onclick="showToast('تم التصدير ✅','info')">📊 تصدير بيانات العملاء</button>
+    <button class="btn btn-red" onclick="if(confirm('إعادة ضبط كل البيانات؟')){localStorage.clear();location.reload();}">🗑️ إعادة ضبط المصنع</button>
+  </div>`;
+}
+
+function closeAdminModal(){document.getElementById("admin-modal").classList.remove("show");}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.getElementById("page-login").style.display="flex";
+document.getElementById("page-login").style.flexDirection="column";
+document.getElementById("page-secret").style.display="none";
+document.getElementById("page-secret").style.flexDirection="column";
+</script>
+</body>
+</html>
