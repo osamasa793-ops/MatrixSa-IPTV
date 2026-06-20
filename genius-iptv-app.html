@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0612">
+<title>Genius IPTV</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{display:none}
+body{font-family:"Cairo",sans-serif;background:#0a0612;color:#f0ebe0;direction:rtl;min-height:100vh}
+input,select,button,textarea{font-family:"Cairo",sans-serif}
+input::placeholder,textarea::placeholder{color:#5a5268}
+select option{background:#1a1228}
+.scr{display:none}.scr.on{display:block}
+.gt{font-family:"Marcellus",serif;background:linear-gradient(135deg,#f4d488,#d4af37 45%,#a87f2e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.5px}
+.card{background:linear-gradient(155deg,rgba(120,80,200,.08),rgba(20,12,32,.4));border:1px solid rgba(212,175,55,.15);border-radius:14px}
+.inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.18);border-radius:10px;padding:11px 14px;color:#f0ebe0;font-size:13px;outline:none;direction:rtl;margin-bottom:14px}
+.inp:focus{border-color:rgba(212,175,55,.5)}
+.sel{width:100%;background:#160f22;border:1px solid rgba(212,175,55,.18);border-radius:10px;padding:11px 14px;color:#f0ebe0;font-size:13px;outline:none;direction:rtl;margin-bottom:14px}
+.btn{border:none;color:#1a1228;padding:13px 20px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;width:100%;background:linear-gradient(135deg,#f4d488,#d4af37);box-shadow:0 4px 20px rgba(212,175,55,.3);margin-bottom:10px;display:block}
+.bsm{padding:7px 14px;font-size:11px;width:auto;display:inline-block;margin-bottom:0}
+.bg{background:linear-gradient(135deg,#5fd99a,#1ea571);color:#0a1f14;box-shadow:0 4px 14px rgba(95,217,154,.2)}
+.br{background:linear-gradient(135deg,#e8717a,#c4424d);color:#fff;box-shadow:none}
+.bb{background:linear-gradient(135deg,#7b9fe8,#4a6fc7);color:#fff;box-shadow:none}
+.bgr{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.15);color:#f0ebe0;box-shadow:none}
+.bo{background:linear-gradient(135deg,#f0a868,#d4822e);color:#1a1228;box-shadow:none}
+.pill{display:inline-block;font-size:10px;font-weight:900;padding:2px 8px;border-radius:5px;color:#fff}
+.pg{background:#1ea571}.pr{background:#c4424d}.pb{background:#4a6fc7}.po{background:#d4822e}.pp{background:#8b5fbf}
+.atab{display:flex;align-items:center;gap:5px;white-space:nowrap;padding:8px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.04);color:#9c93ad;border:1px solid rgba(212,175,55,.1);flex-shrink:0}
+.atab.on{background:linear-gradient(135deg,#f4d488,#d4af37);color:#1a1228;border-color:transparent;box-shadow:0 4px 14px rgba(212,175,55,.3)}
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(10,6,18,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(212,175,55,.15);display:flex;justify-content:space-around;padding:9px 0 18px;z-index:200}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 12px}
+.nic{font-size:21px;filter:grayscale(1) opacity(.35);transition:filter .2s}
+.nil{font-size:9px;font-weight:700;color:#5a5268;transition:color .2s}
+.nid{width:18px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,#f4d488,#d4af37);margin-top:-2px;display:none}
+.ni.on .nic{filter:none}.ni.on .nil{color:#d4af37}.ni.on .nid{display:block}
+.mo{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center}
+.mo.show{display:flex}
+.mb{width:100%;max-width:430px;background:linear-gradient(180deg,#1a1228,#0a0612);border:1px solid rgba(212,175,55,.2);border-radius:24px 24px 0 0;padding:22px 22px 44px;animation:su .3s cubic-bezier(.34,1.56,.64,1)}
+.amo{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:16px}
+.amo.show{display:flex}
+.amb{width:100%;max-width:420px;background:linear-gradient(160deg,#1d1530,#100a1a);border:1px solid rgba(212,175,55,.2);border-radius:20px;padding:22px;max-height:88vh;overflow-y:auto;animation:pi .25s cubic-bezier(.34,1.56,.64,1)}
+.tst{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1d1530;border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:12px 20px;z-index:9999;display:flex;align-items:center;gap:8px;animation:sd .3s ease;white-space:nowrap;pointer-events:none}
+.lb{background:#c4424d;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:3px;animation:pu 1.5s infinite}
+#pw{position:fixed;inset:0;z-index:5000;background:#000;display:none;flex-direction:column}
+#pw.show{display:flex}
+#pv{width:100%;height:100%;object-fit:contain;display:block}
+#pif{width:100%;height:100%;border:none;display:none}
+#pol{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;transition:opacity .3s}
+.pt{background:linear-gradient(180deg,rgba(0,0,0,.88),transparent);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.pc{display:flex;align-items:center;justify-content:center;gap:28px}
+.pcb{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.13);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;border:none;color:#fff}
+.ppl{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#f4d488,#d4af37);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:28px;box-shadow:0 8px 30px rgba(212,175,55,.5);border:none;color:#1a1228}
+.pb2{background:linear-gradient(0deg,rgba(0,0,0,.9),transparent);padding:14px 16px}
+#pnu{display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:30px}
+#psp{display:none;position:absolute;inset:0;align-items:center;justify-content:center}
+.sc{width:50px;height:50px;border-radius:50%;border:3px solid rgba(212,175,55,.15);border-top:3px solid #d4af37;animation:sp 1s linear infinite}
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent)}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pi{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes sp{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes sd{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="pg-login" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden">
+<div style="position:absolute;top:-100px;right:-100px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.08),transparent 70%);pointer-events:none"></div>
+<div style="position:absolute;bottom:-80px;left:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(120,80,200,.12),transparent 70%);pointer-events:none"></div>
+<div style="margin-bottom:36px;text-align:center;position:relative;z-index:1">
+<div style="width:90px;height:90px;border-radius:24px;background:linear-gradient(155deg,#241a38,#160f22);border:1.5px solid rgba(212,175,55,.4);display:flex;align-items:center;justify-content:center;font-family:Marcellus,serif;font-size:46px;font-weight:400;color:#d4af37;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 30px rgba(212,175,55,.15);margin:0 auto 18px">G</div>
+<div class="gt" style="font-size:32px;font-weight:400">Genius IPTV</div>
+<div class="gold-line" style="width:80px;margin:10px auto"></div>
+<div style="font-size:11px;color:#7a7188;margin-top:8px;letter-spacing:1px">بوابة البث الفاخر</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,.04);border-radius:14px;padding:4px;margin-bottom:24px;width:100%;max-width:340px;border:1px solid rgba(212,175,55,.1)">
+<div id="lm-c" onclick="setLM('client')" style="flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#f4d488,#d4af37);color:#1a1228">👤 دخول العميل</div>
+<div id="lm-a" onclick="setLM('admin')" style="flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;color:#9c93ad">🔐 لوحة الأدمن</div>
+</div>
+<div style="width:100%;max-width:340px">
+<div id="cl-lo">
+<div style="display:flex;gap:6px;margin-bottom:18px">
+<div class="ltb on" onclick="setLT('act',this)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer"><div style="font-size:16px">🎟️</div>كود التفعيل</div>
+<div class="ltb" onclick="setLT('up',this)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.04);color:#9c93ad;border:1px solid rgba(212,175,55,.1)"><div style="font-size:16px">👤</div>يوزر/باسورد</div>
+<div class="ltb" onclick="setLT('xt',this)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.04);color:#9c93ad;border:1px solid rgba(212,175,55,.1)"><div style="font-size:16px">📡</div>Xtream</div>
+</div>
+<div id="lt-act"><input id="l-code" class="inp" style="font-family:monospace;direction:ltr" placeholder="GNS-XXXX-XXXX"></div>
+<div id="lt-up" style="display:none"><input id="l-user" class="inp" placeholder="اسم المستخدم"><input id="l-pass" class="inp" type="password" placeholder="••••••••"></div>
+<div id="lt-xt" style="display:none"><input id="l-xu" class="inp" style="font-family:monospace;direction:ltr" placeholder="http://server.com:8080"><input id="l-xus" class="inp" style="font-family:monospace;direction:ltr" placeholder="username"><input id="l-xp" class="inp" type="password" placeholder="password"></div>
+</div>
+<div id="al-lo" style="display:none"><input id="a-user" class="inp" placeholder="Genius-admin"><input id="a-pass" class="inp" type="password" placeholder="••••••••"></div>
+<div id="l-err" style="display:none;background:rgba(196,66,77,.12);border:1px solid rgba(196,66,77,.3);border-radius:10px;padding:10px;font-size:12px;color:#e8717a;margin-bottom:14px;text-align:center">⚠️ بيانات غير صحيحة</div>
+<button class="btn" onclick="doLogin()">▶ دخول التطبيق</button>
+<div style="text-align:center;font-size:11px;color:#5a5268;margin-top:12px">Genius IPTV © 2026</div>
+</div>
+</div>
+
+<!-- SECRET -->
+<div id="pg-secret" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center">
+<div style="font-size:64px;margin-bottom:16px" id="sec-ic">🔐</div>
+<div style="font-size:22px;font-weight:900;margin-bottom:8px">تحقق من هوية الأدمن</div>
+<div style="font-size:12px;color:#9c93ad;margin-bottom:28px">أدخل الكود السري</div>
+<div style="width:100%;max-width:340px">
+<input id="sec-code" class="inp" type="password" placeholder="الكود السري">
+<div id="sec-err" style="display:none;color:#e8717a;font-size:12px;margin-bottom:12px">الكود غير صحيح</div>
+<button class="btn" onclick="doSecret()">🔓 تأكيد الدخول</button>
+<div onclick="goLogin()" style="margin-top:14px;font-size:12px;color:#7a7188;cursor:pointer">← العودة</div>
+</div>
+</div>
+
+<!-- CLIENT APP -->
+<div id="pg-client" style="display:none;max-width:430px;margin:0 auto">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:rgba(10,6,18,.97);position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);border-bottom:1px solid rgba(212,175,55,.12)">
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(155deg,#241a38,#160f22);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-family:Marcellus,serif;font-size:18px;color:#d4af37">G</div>
+<div class="gt" style="font-size:17px;font-weight:400">Genius IPTV</div>
+</div>
+<div id="sub-badge"></div>
+</div>
+<div style="padding-bottom:76px">
+
+<!-- HOME -->
+<div id="sc-home" class="scr on">
+<div id="hero" style="height:280px;position:relative;overflow:hidden;cursor:pointer" onclick="playHero()">
+<div id="hbg" style="position:absolute;inset:0;transition:background 1.2s"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(270deg,rgba(10,6,18,.97) 30%,rgba(10,6,18,.3) 70%,transparent)"></div>
+<div id="hem" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:120px;opacity:.13;filter:blur(3px);user-select:none"></div>
+<div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);max-width:64%;text-align:right">
+<div id="hbw" style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:10px"></div>
+<div id="ht" style="font-size:22px;font-weight:900;line-height:1.2;margin-bottom:4px"></div>
+<div id="har" style="font-size:11px;color:#9c93ad;margin-bottom:6px"></div>
+<div id="hst" style="color:#d4af37;font-size:12px;margin-bottom:10px"></div>
+<div style="display:flex;gap:8px;justify-content:flex-end">
+<button onclick="event.stopPropagation();playHero()" style="background:linear-gradient(135deg,#f4d488,#d4af37);border:none;color:#1a1228;padding:10px 20px;border-radius:10px;font-family:Cairo,sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(212,175,55,.4)">▶ شاهد</button>
+<button onclick="event.stopPropagation();toggleHL()" style="background:rgba(255,255,255,.08);border:1px solid rgba(212,175,55,.25);color:#fff;padding:10px 14px;border-radius:10px;font-family:Cairo,sans-serif;font-size:13px;cursor:pointer">+ قائمتي</button>
+</div>
+</div>
+<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(212,175,55,.18);border:1.5px solid rgba(212,175,55,.4);display:flex;align-items:center;justify-content:center;font-size:22px;backdrop-filter:blur(4px)">▶</div>
+<div id="hdots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px"></div>
+</div>
+<div style="padding:20px 16px 0">
+<div style="font-size:15px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px"><div style="width:3px;height:18px;background:linear-gradient(180deg,#f4d488,#d4af37);border-radius:2px"></div>تصفح المحتوى</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px">
+<div onclick="goTo('live')" style="background:linear-gradient(160deg,#2a1535,#160a1e);border:1px solid rgba(212,175,55,.18);border-radius:14px;padding:18px 8px;text-align:center;cursor:pointer;position:relative;overflow:hidden">
+<div style="font-size:26px;margin-bottom:6px">📺</div><div style="font-size:13px;font-weight:900;color:#f0ebe0">قنوات</div>
+<div style="font-size:9px;color:#9c93ad;margin-top:2px" id="hcc">مباشرة</div>
+<div class="lb" style="position:absolute;top:7px;left:7px;border-radius:3px">LIVE</div>
+</div>
+<div onclick="goTo('movies')" style="background:linear-gradient(160deg,#2a1535,#160a1e);border:1px solid rgba(212,175,55,.18);border-radius:14px;padding:18px 8px;text-align:center;cursor:pointer;position:relative;overflow:hidden">
+<div style="font-size:26px;margin-bottom:6px">🎬</div><div style="font-size:13px;font-weight:900;color:#f0ebe0">أفلام</div>
+<div style="font-size:9px;color:#9c93ad;margin-top:2px" id="hmc">متاحة</div>
+</div>
+<div onclick="goTo('series')" style="background:linear-gradient(160deg,#2a1535,#160a1e);border:1px solid rgba(212,175,55,.18);border-radius:14px;padding:18px 8px;text-align:center;cursor:pointer;position:relative;overflow:hidden">
+<div style="font-size:26px;margin-bottom:6px">📽️</div><div style="font-size:13px;font-weight:900;color:#f0ebe0">مسلسلات</div>
+<div style="font-size:9px;color:#9c93ad;margin-top:2px" id="hsc">متاحة</div>
+</div>
+</div>
+<div style="margin-bottom:20px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span onclick="goTo('movies')" style="font-size:12px;color:#d4af37;font-weight:700;cursor:pointer">الكل ›</span><div style="font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px"><div style="width:3px;height:16px;background:linear-gradient(180deg,#f4d488,#d4af37);border-radius:2px"></div>أفلام مميزة</div></div>
+<div id="hmr" style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:4px 0 8px"></div>
+</div>
+<div style="margin-bottom:20px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span onclick="goTo('series')" style="font-size:12px;color:#d4af37;font-weight:700;cursor:pointer">الكل ›</span><div style="font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px"><div style="width:3px;height:16px;background:linear-gradient(180deg,#f4d488,#d4af37);border-radius:2px"></div>مسلسلات رائجة</div></div>
+<div id="hsr" style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:4px 0 8px"></div>
+</div>
+<div id="sub-bar" style="border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"></div>
+</div>
+</div>
+
+<!-- LIVE -->
+<div id="sc-live" class="scr" style="padding:16px 18px">
+<div style="font-size:15px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span class="lb" style="border-radius:5px;padding:2px 8px;font-size:10px">LIVE</span>القنوات</div>
+<div style="background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.15);border-radius:12px;padding:9px 14px;display:flex;gap:8px;align-items:center;margin-bottom:12px"><input oninput="filt('ch',this.value)" placeholder="بحث..." style="flex:1;background:transparent;border:none;outline:none;color:#f0ebe0;font-family:Cairo,sans-serif;font-size:12px;direction:rtl;text-align:right"><span style="color:#5a5268">🔍</span></div>
+<div id="ch-cats" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding:2px 0"></div>
+<div id="ch-list"></div>
+</div>
+
+<!-- MOVIES -->
+<div id="sc-movies" class="scr" style="padding:16px 18px">
+<div style="font-size:15px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px"><div style="width:3px;height:18px;background:linear-gradient(180deg,#f4d488,#d4af37);border-radius:2px"></div>🎬 الأفلام</div>
+<div style="background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.15);border-radius:12px;padding:9px 14px;display:flex;gap:8px;align-items:center;margin-bottom:12px"><input oninput="filt('mv',this.value)" placeholder="بحث..." style="flex:1;background:transparent;border:none;outline:none;color:#f0ebe0;font-family:Cairo,sans-serif;font-size:12px;direction:rtl;text-align:right"><span style="color:#5a5268">🔍</span></div>
+<div id="mv-cats" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding:2px 0"></div>
+<div id="mv-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+</div>
+
+<!-- SERIES -->
+<div id="sc-series" class="scr" style="padding:16px 18px">
+<div style="font-size:15px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px"><div style="width:3px;height:18px;background:linear-gradient(180deg,#f4d488,#d4af37);border-radius:2px"></div>📽️ المسلسلات</div>
+<div style="background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.15);border-radius:12px;padding:9px 14px;display:flex;gap:8px;align-items:center;margin-bottom:12px"><input oninput="filt('sr',this.value)" placeholder="بحث..." style="flex:1;background:transparent;border:none;outline:none;color:#f0ebe0;font-family:Cairo,sans-serif;font-size:12px;direction:rtl;text-align:right"><span style="color:#5a5268">🔍</span></div>
+<div id="sr-cats" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding:2px 0"></div>
+<div id="sr-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+</div>
+
+<!-- SEARCH -->
+<div id="sc-search" class="scr" style="padding:16px 18px">
+<div style="background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.15);border-radius:13px;padding:10px 15px;display:flex;gap:10px;align-items:center;margin-bottom:20px"><input id="s-inp" oninput="doSearch()" placeholder="ابحث عن أي محتوى..." style="flex:1;background:transparent;border:none;outline:none;color:#f0ebe0;font-family:Cairo,sans-serif;font-size:13px;direction:rtl;text-align:right"><span style="color:#5a5268">🔍</span></div>
+<div id="s-res"></div>
+</div>
+
+<!-- MYLIST -->
+<div id="sc-mylist" class="scr" style="padding:16px 18px">
+<div style="font-size:14px;font-weight:800;margin-bottom:14px">📋 قائمتي (<span id="lc">0</span>)</div>
+<div id="ml-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+<div id="ml-empty" style="text-align:center;padding:60px 30px;color:#5a5268"><div style="font-size:56px;margin-bottom:12px">🎬</div><div style="font-size:15px;font-weight:700">قائمتك فارغة</div></div>
+</div>
+
+<!-- PROFILE -->
+<div id="sc-profile" class="scr" style="padding:24px 18px">
+<div style="text-align:center;margin-bottom:28px">
+<div style="width:74px;height:74px;border-radius:50%;background:linear-gradient(155deg,#241a38,#160f22);border:1.5px solid rgba(212,175,55,.4);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px">👤</div>
+<div id="prf-nm" style="font-size:18px;font-weight:900"></div>
+<div id="prf-us" style="font-size:12px;color:#9c93ad;margin-top:4px"></div>
+<div style="margin-top:10px;display:inline-block;background:linear-gradient(135deg,#f4d488,#d4af37);border-radius:20px;padding:4px 16px;font-size:12px;font-weight:700;color:#1a1228">⭐ اشتراك مميز</div>
+</div>
+<div class="card" style="padding:16px;margin-bottom:14px">
+<div style="font-size:13px;font-weight:800;margin-bottom:12px">🎟️ بيانات الاشتراك</div>
+<div id="prf-det"></div>
+</div>
+<button class="btn br" onclick="doLogout()">🚪 تسجيل الخروج</button>
+</div>
+</div>
+
+<div class="nav-bar">
+<div class="ni on" onclick="swSc('home',this)"><div class="nic">🏠</div><div class="nil">الرئيسية</div><div class="nid"></div></div>
+<div class="ni" onclick="swSc('search',this)"><div class="nic">🔍</div><div class="nil">البحث</div><div class="nid"></div></div>
+<div class="ni" onclick="swSc('live',this)"><div class="nic">📺</div><div class="nil">قنوات</div><div class="nid"></div></div>
+<div class="ni" onclick="swSc('mylist',this)"><div class="nic">📋</div><div class="nil">قائمتي</div><div class="nid"></div></div>
+<div class="ni" onclick="swSc('profile',this)"><div class="nic">👤</div><div class="nil">حسابي</div><div class="nid"></div></div>
+</div>
+</div>
+
+<!-- Detail Modal -->
+<div id="det-mo" class="mo" onclick="closeDet()">
+<div class="mb" onclick="event.stopPropagation()">
+<div style="width:38px;height:4px;background:rgba(212,175,55,.25);border-radius:2px;margin:0 auto 20px"></div>
+<div style="display:flex;gap:14px;margin-bottom:18px">
+<div id="det-post" style="width:100px;height:140px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:52px"></div>
+<div style="flex:1;text-align:right">
+<div id="det-tit" style="font-size:17px;font-weight:900;margin-bottom:4px;line-height:1.3"></div>
+<div id="det-sub" style="font-size:11px;color:#9c93ad;margin-bottom:8px"></div>
+<div id="det-st" style="color:#d4af37;font-size:11px;margin-bottom:6px"></div>
+<div id="det-mt" style="font-size:11px;color:#7a7188"></div>
+<div id="det-gn" style="font-size:11px;color:#9c93ad;margin-top:3px"></div>
+</div>
+</div>
+<button class="btn" onclick="playSel()" style="font-size:15px">▶ شاهد الآن</button>
+<button class="btn bgr" id="det-lb" onclick="togSelL()">+ أضف للقائمة</button>
+<button class="btn bgr" onclick="closeDet()" style="color:#7a7188;margin-bottom:0">إغلاق</button>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div id="pg-admin" style="display:none">
+<div style="background:rgba(10,6,18,.97);border-bottom:1px solid rgba(212,175,55,.12);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)">
+<button class="btn bgr bsm" onclick="doLogout()" style="margin-bottom:0">🚪 خروج</button>
+<div style="display:flex;align-items:center;gap:10px">
+<div><div class="gt" style="font-size:15px;font-weight:400">لوحة التحكم</div><div style="font-size:10px;color:#5a5268;text-align:right">Genius-admin</div></div>
+<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(155deg,#241a38,#160f22);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-family:Marcellus,serif;font-size:18px;color:#d4af37">G</div>
+</div>
+</div>
+<div style="display:flex;gap:4px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(212,175,55,.1)">
+<div class="atab on" onclick="setAT('dash',this)">📊 الرئيسية</div>
+<div class="atab" onclick="setAT('clients',this)">👥 العملاء</div>
+<div class="atab" onclick="setAT('codes',this)">🎟️ الأكواد</div>
+<div class="atab" onclick="setAT('import',this)" style="background:linear-gradient(135deg,#7b9fe8,#4a6fc7);color:#fff;border:none">📥 استيراد</div>
+<div class="atab" onclick="setAT('channels',this)">📺 القنوات</div>
+<div class="atab" onclick="setAT('movies',this)">🎬 الأفلام</div>
+<div class="atab" onclick="setAT('series',this)">📽️ المسلسلات</div>
+<div class="atab" onclick="setAT('cats',this)">🗂️ التصنيفات</div>
+<div class="atab" onclick="setAT('settings',this)">⚙️ الإعدادات</div>
+</div>
+<div id="ac" style="padding:18px 16px;padding-bottom:40px"></div>
+</div>
+
+<!-- Admin Modal -->
+<div id="am" class="amo" onclick="closeAM()">
+<div class="amb" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<span onclick="closeAM()" style="color:#7a7188;cursor:pointer;font-size:22px">✕</span>
+<div id="am-tit" style="font-size:15px;font-weight:900"></div>
+</div>
+<div id="am-body"></div>
+</div>
+</div>
+
+<!-- PLAYER -->
+<div id="pw">
+<video id="pv" playsinline style="width:100%;height:100%;object-fit:contain;display:block"></video>
+<iframe id="pif" allowfullscreen allow="autoplay;fullscreen" style="width:100%;height:100%;border:none;display:none"></iframe>
+<div id="pnu"><div id="pn-em" style="font-size:80px"></div><div id="pn-tit" style="font-size:20px;font-weight:900"></div><div style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);border-radius:14px;padding:16px 24px;max-width:300px"><div style="font-size:13px;color:#d4af37;font-weight:700;margin-bottom:8px">⚠️ لا يوجد رابط</div><div style="font-size:12px;color:#9c93ad">أضف رابط البث من لوحة الأدمن</div></div><button class="btn bgr" onclick="closePlayer()" style="margin-top:16px;width:auto;padding:10px 24px">إغلاق</button></div>
+<div id="psp"><div class="sc"></div></div>
+<div id="pol">
+<div class="pt"><div style="display:flex;align-items:center;gap:10px"><span id="p-live" class="lb" style="display:none;border-radius:4px;padding:3px 8px">● LIVE</span><div id="p-tit" style="font-size:13px;color:#ddd;font-weight:700;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div></div><div style="display:flex;gap:8px"><button onclick="togFS()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px">⊞</button><button onclick="closePlayer()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">✕</button></div></div>
+<div class="pc"><button class="pcb" id="pb-bk" onclick="seekBk()">⏪</button><button class="ppl" id="pb-pl" onclick="togPlay()">▶</button><button class="pcb" id="pb-fw" onclick="seekFw()">⏩</button></div>
+<div class="pb2">
+<div id="p-prog" style="margin-bottom:12px"><div id="p-bg" onclick="seekTo(event)" style="height:5px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer;position:relative;margin-bottom:6px"><div id="p-bar" style="height:100%;background:linear-gradient(90deg,#f4d488,#d4af37);border-radius:3px;width:0%"></div><div id="p-th" style="position:absolute;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#fff;margin-left:-7px;left:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa"><span id="p-tot">0:00</span><span id="p-cur">0:00</span></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><button onclick="togFS()" style="background:none;border:none;color:#ccc;font-size:20px;cursor:pointer">⊞</button><div style="display:flex;align-items:center;gap:10px"><button onclick="togMute()" id="p-mute" style="background:none;border:none;color:#ccc;font-size:20px;cursor:pointer">🔊</button><input type="range" min="0" max="1" step="0.1" value="1" oninput="setVol(this.value)" style="width:70px;accent-color:#d4af37"></div></div>
+</div>
+</div>
+</div>
+<div id="tst" class="tst" style="display:none"></div>
+
+<script>
+const ADMIN={u:"Genius-admin",p:"Genius2026",s:"Genius-1980"};
+const DURS=[{l:"3 أيام",d:3},{l:"30 يوم",d:30},{l:"90 يوم",d:90},{l:"180 يوم",d:180},{l:"365 يوم",d:365}];
+const EML=["📺","⚽","📰","🌟","🎵","🌍","💼","🏆","📡","🔴","📻"];
+const EMM=["🎬","🚗","💥","🃏","🕵️","👁️","📚","🌳","🏚️","🎭"];
+const EMS=["🏘️","🌹","🎮","🌙","💕","🏙️","❤️","💖","🎭","👑"];
+const ls={g:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const DM=[
+{id:"m1",title:"Ocean\'s Eleven",ar:"أوشن إيليفن",genre:"جريمة",rating:7.7,year:2001,duration:"1س 56د",emoji:"🃏",color:["#241a38","#3a2558","#160f22"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+{id:"m2",title:"The Transporter",ar:"الناقل",genre:"أكشن",rating:6.8,year:2002,duration:"1س 32د",emoji:"🚗",color:["#2a1810","#4a2a18","#1a0f0a"],badge:"4K",url:"",urlType:"direct",type:"movie"},
+{id:"m3",title:"Rambo",ar:"رامبو",genre:"أكشن",rating:7.0,year:2008,duration:"1س 32د",emoji:"💥",color:["#2a1015","#4a1d25","#1a0a0d"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+{id:"m4",title:"Matilda",ar:"ماتيلدا",genre:"موسيقي",rating:7.0,year:2022,duration:"1س 57د",emoji:"📚",color:["#152030","#1f3550","#0d1620"],badge:"NEW",url:"",urlType:"direct",type:"movie"},
+{id:"m5",title:"Constantine",ar:"قسطنطين",genre:"خيال",rating:7.2,year:2018,duration:"1س 30د",emoji:"👁️",color:["#1d1530","#2d2050","#120d20"],badge:"HD",url:"",urlType:"direct",type:"movie"},
+{id:"m6",title:"Jack Ryan",ar:"جاك رايان",genre:"تجسس",rating:8.0,year:2018,duration:"1س 45د",emoji:"🕵️",color:["#101e28","#1a3142","#0a1318"],badge:"4K",url:"",urlType:"direct",type:"movie"}
+];
+const DS=[
+{id:"s1",title:"باب الحارة",sub:"Bab Al Hara",genre:"دراما",eps:120,seasons:9,rating:8.2,emoji:"🏘️",color:["#2a2010","#4a3818","#1a140a"],url:"",urlType:"direct",type:"series"},
+{id:"s2",title:"ورود وذنوب",sub:"Güller ve Günahlar",genre:"رومانسي",eps:45,seasons:2,rating:8.5,emoji:"🌹",color:["#2a1020","#451835","#1a0a15"],url:"",urlType:"direct",type:"series"},
+{id:"s3",title:"اللعبة",sub:"The Game",genre:"إثارة",eps:32,seasons:2,rating:7.8,emoji:"🎮",color:["#101e28","#1c3245","#0a1318"],url:"",urlType:"direct",type:"series"},
+{id:"s4",title:"حلم اشرف",sub:"Eşref Rüya",genre:"دراما",eps:28,seasons:1,rating:8.0,emoji:"🌙",color:["#1d1530","#2d2050","#120d20"],url:"",urlType:"direct",type:"series"},
+{id:"s5",title:"تحت الأرض",sub:"Sevdiğim Sensin",genre:"رومانسي",eps:40,seasons:2,rating:8.3,emoji:"💕",color:["#2a1018","#45182c","#1a0a10"],url:"",urlType:"direct",type:"series"},
+{id:"s6",title:"المدينة البعيدة",sub:"Uzak Şehir",genre:"دراما",eps:36,seasons:2,rating:7.5,emoji:"🏙️",color:["#152018","#1f3528","#0d1610"],url:"",urlType:"direct",type:"series"}
+];
+const DCH=[
+{id:"ch1",name:"MBC مصر",category:"عربي",emoji:"📺",url:"",urlType:"m3u8",type:"live",viewers:"12k"},
+{id:"ch2",name:"روتانا سينما",category:"أفلام",emoji:"🎬",url:"",urlType:"m3u8",type:"live",viewers:"8k"},
+{id:"ch3",name:"beIN Sports 1",category:"رياضة",emoji:"⚽",url:"",urlType:"m3u8",type:"live",viewers:"45k"},
+{id:"ch4",name:"Al Jazeera",category:"أخبار",emoji:"📰",url:"",urlType:"m3u8",type:"live",viewers:"30k"},
+{id:"ch5",name:"MBC 4",category:"عربي",emoji:"🌟",url:"",urlType:"m3u8",type:"live",viewers:"9k"}
+];
+const DCAT=[{id:"c1",name:"بث مباشر",icon:"📺"},{id:"c2",name:"أفلام",icon:"🎬"},{id:"c3",name:"مسلسلات",icon:"📽️"},{id:"c4",name:"أطفال",icon:"🧒"},{id:"c5",name:"برامج",icon:"📻"},{id:"c6",name:"القرآن",icon:"📖"},{id:"c7",name:"موسيقى",icon:"🎵"},{id:"c8",name:"وثائقي",icon:"🔍"}];
+const DCL=[
+{id:"cl1",name:"أسامة",username:"Osama129",password:"Maya3010",activationCode:"GNS-O1980-VIP1",xtreamUser:"Osama129_xt",xtreamPass:"Maya3010",xtreamUrl:"http://genius.tv:8080",createdAt:"2026-01-01",expiresAt:"2026-12-31",days:365,status:"active",maxConn:2,notes:"المالك"},
+{id:"cl2",name:"سارة علي",username:"sara_tv",password:"sara456",activationCode:"GNS-E5F6-G7H8",xtreamUser:"sara_xt",xtreamPass:"xt789012",xtreamUrl:"http://genius.tv:8080",createdAt:"2026-04-01",expiresAt:"2026-07-01",days:90,status:"active",maxConn:1,notes:""}
+];
+const D={
+get mv(){return ls.g("gn_mv",DM)},set mv(v){ls.s("gn_mv",v)},
+get sr(){return ls.g("gn_sr",DS)},set sr(v){ls.s("gn_sr",v)},
+get ch(){return ls.g("gn_ch",DCH)},set ch(v){ls.s("gn_ch",v)},
+get cat(){return ls.g("gn_cat",DCAT)},set cat(v){ls.s("gn_cat",v)},
+get cl(){return ls.g("gn_cl",DCL)},set cl(v){ls.s("gn_cl",v)},
+get ml(){return ls.g("gn_ml",[])},set ml(v){ls.s("gn_ml",v)}
+};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const seg=()=>{const c="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";return Array.from({length:4},()=>c[~~(Math.random()*c.length)]).join("")};
+const gc=()=>`GNS-${seg()}-${seg()}`;
+const aD=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split("T")[0]};
+const dL=e=>Math.max(0,Math.ceil((new Date(e)-new Date())/864e5));
+const st=n=>"★".repeat(Math.round(n/2))+"☆".repeat(5-Math.round(n/2));
+const ft=s=>{if(!s||isNaN(s))return"0:00";const m=~~(s/60),sc=~~(s%60);return`${m}:${sc<10?"0":""}${sc}`};
+const rc=()=>{const p=[["#241a38","#3a2558","#160f22"],["#2a1018","#45182c","#1a0a10"],["#101e28","#1c3245","#0a1318"],["#2a1810","#4a2a18","#1a0f0a"],["#152018","#1f3528","#0d1610"],["#1d1530","#2d2050","#120d20"],["#2a1015","#4a1d25","#1a0a0d"],["#152030","#1f3550","#0d1620"]];return p[~~(Math.random()*p.length)]};
+const cp=t=>{navigator.clipboard?.writeText(t).catch(()=>{});toast("تم النسخ ✅")};
+function toast(msg,tp="ok"){const el=document.getElementById("tst");const c=tp==="ok"?"#1ea571":tp==="err"?"#c4424d":"#d4822e";const ic=tp==="ok"?"✅":tp==="err"?"❌":"⚠️";el.innerHTML=`<span style="color:${c};font-size:16px">${ic}</span><span style="font-size:13px;font-weight:700">${msg}</span>`;el.style.border=`1px solid ${c}44`;el.style.display="flex";clearTimeout(el._t);el._t=setTimeout(()=>el.style.display="none",2800)}
+// ═══ PLAYER ═══
+let hls=null,pItem=null,pPlay=false,pMute=false,ctT=null;
+function launch(item){
+pItem=item;
+const pw=document.getElementById("pw"),pv=document.getElementById("pv"),pif=document.getElementById("pif"),pnu=document.getElementById("pnu"),psp=document.getElementById("psp");
+pw.classList.add("show");
+document.getElementById("p-tit").textContent=item.title||item.name||"";
+const isL=item.type==="live";
+document.getElementById("p-live").style.display=isL?"inline-block":"none";
+document.getElementById("pb-bk").style.display=isL?"none":"flex";
+document.getElementById("pb-fw").style.display=isL?"none":"flex";
+document.getElementById("p-prog").style.display=isL?"none":"block";
+document.getElementById("pn-em").textContent=item.emoji||"🎬";
+document.getElementById("pn-tit").textContent=item.title||item.name||"";
+if(!item.url||!item.url.trim()){pnu.style.display="flex";pv.style.display="none";pif.style.display="none";return}
+pnu.style.display="none";
+if(hls){hls.destroy();hls=null}
+pv.pause();pv.src="";pif.src="";
+const url=item.url.trim();
+const isYT=url.includes("youtube")||url.includes("youtu.be");
+const isHLS=url.includes(".m3u8")||url.includes("/live/")||url.includes("/hls/")||item.urlType==="m3u8";
+pv.style.display="none";pif.style.display="none";
+if(isYT){let src=url;if(url.includes("watch?v="))src="https://www.youtube.com/embed/"+url.split("v=")[1].split("&")[0]+"?autoplay=1";else if(url.includes("youtu.be/"))src="https://www.youtube.com/embed/"+url.split("youtu.be/")[1]+"?autoplay=1";pif.src=src;pif.style.display="block";psp.style.display="none";return}
+pv.style.display="block";psp.style.display="flex";
+if(isHLS&&window.Hls&&Hls.isSupported()){hls=new Hls({enableWorker:true,lowLatencyMode:isL,backBufferLength:isL?0:90});hls.loadSource(url);hls.attachMedia(pv);hls.on(Hls.Events.MANIFEST_PARSED,()=>{pv.play().catch(()=>{});pPlay=true;upPB()});hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){hls.destroy();hls=null;pv.src=url;pv.play().catch(()=>{})}})}
+else if(isHLS&&pv.canPlayType("application/vnd.apple.mpegurl")){pv.src=url;pv.play().catch(()=>{})}
+else{pv.src=url;pv.play().catch(()=>{if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(url);hls.attachMedia(pv);hls.on(Hls.Events.MANIFEST_PARSED,()=>pv.play().catch(()=>{}))}})}
+pv.onplay=()=>{pPlay=true;upPB();psp.style.display="none"};
+pv.onpause=()=>{pPlay=false;upPB()};
+pv.onwaiting=()=>psp.style.display="flex";
+pv.oncanplay=()=>psp.style.display="none";
+pv.ontimeupdate=upProg;pv.onloadedmetadata=upProg;
+const pol=document.getElementById("pol");pol.style.opacity="1";clearTimeout(ctT);ctT=setTimeout(()=>pol.style.opacity="0",4000);
+pw.ontouchstart=()=>{pol.style.opacity="1";clearTimeout(ctT);ctT=setTimeout(()=>pol.style.opacity="0",4000)}
+}
+function upPB(){document.getElementById("pb-pl").textContent=pPlay?"⏸":"▶"}
+function upProg(){const pv=document.getElementById("pv");if(!pv.duration)return;const p=(pv.currentTime/pv.duration)*100;document.getElementById("p-bar").style.width=p+"%";document.getElementById("p-th").style.left=p+"%";document.getElementById("p-cur").textContent=ft(pv.currentTime);document.getElementById("p-tot").textContent=ft(pv.duration)}
+function closePlayer(){const pv=document.getElementById("pv"),pif=document.getElementById("pif");pv.pause();pv.src="";pif.src="";if(hls){hls.destroy();hls=null}document.getElementById("pw").classList.remove("show");pItem=null;pPlay=false}
+function togPlay(){const pv=document.getElementById("pv");pv.paused?pv.play().catch(()=>{}):pv.pause()}
+function seekBk(){document.getElementById("pv").currentTime=Math.max(0,document.getElementById("pv").currentTime-10)}
+function seekFw(){document.getElementById("pv").currentTime+=10}
+function seekTo(e){const pv=document.getElementById("pv");if(!pv.duration)return;const r=e.currentTarget.getBoundingClientRect();pv.currentTime=((e.clientX-r.left)/r.width)*pv.duration}
+function togMute(){const pv=document.getElementById("pv");pMute=!pMute;pv.muted=pMute;document.getElementById("p-mute").textContent=pMute?"🔇":"🔊"}
+function setVol(v){document.getElementById("pv").volume=parseFloat(v)}
+function togFS(){const el=document.getElementById("pw");if(!document.fullscreenElement)el.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.()}
+!document.getElementById("hls-js")&&(()=>{const s=document.createElement("script");s.id="hls-js";s.src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js";document.head.appendChild(s)})();
+
+// ═══ LOGIN ═══
+let LM="client",LT="act",curCl=null;
+function setLM(m){LM=m;document.getElementById("cl-lo").style.display=m==="client"?"block":"none";document.getElementById("al-lo").style.display=m==="admin"?"block":"none";["c","a"].forEach(x=>{const el=document.getElementById("lm-"+x);el.style.background=((x==="c"&&m==="client")||(x==="a"&&m==="admin"))?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"transparent";el.style.color=((x==="c"&&m==="client")||(x==="a"&&m==="admin"))?"#fff":"#8888aa"});document.getElementById("l-err").style.display="none"}
+function setLT(t,el){LT=t;["act","up","xt"].forEach(x=>document.getElementById("lt-"+x).style.display=x===t?"block":"none");document.querySelectorAll(".ltb").forEach(b=>{b.style.background="rgba(255,255,255,.05)";b.style.color="#8888aa";b.style.border="1px solid rgba(255,255,255,.08)"});el.style.background="linear-gradient(135deg,#ff4fa3,#ff8c42)";el.style.color="#fff";el.style.border="none"}
+function doLogin(){
+  document.getElementById("l-err").style.display="none";
+  if(LM==="admin"){const u=document.getElementById("a-user").value.trim(),p=document.getElementById("a-pass").value;if(u===ADMIN.u&&p===ADMIN.p){document.getElementById("pg-login").style.display="none";document.getElementById("pg-secret").style.display="flex"}else document.getElementById("l-err").style.display="block";return}
+  const cl=D.cl;let found=null;
+  if(LT==="act")found=cl.find(c=>c.activationCode===document.getElementById("l-code").value.trim());
+  else if(LT==="up"){const u=document.getElementById("l-user").value.trim(),p=document.getElementById("l-pass").value;found=cl.find(c=>c.username===u&&c.password===p)}
+  else found=cl.find(c=>c.xtreamUser===document.getElementById("l-xus").value.trim())||cl[0];
+  if(found){curCl=found;initCl();document.getElementById("pg-login").style.display="none";document.getElementById("pg-client").style.display="block"}
+  else document.getElementById("l-err").style.display="block"
+}
+function doSecret(){if(document.getElementById("sec-code").value===ADMIN.s){document.getElementById("sec-ic").textContent="✅";setTimeout(()=>{document.getElementById("pg-secret").style.display="none";document.getElementById("pg-admin").style.display="block";initAdmin()},600)}else document.getElementById("sec-err").style.display="block"}
+function goLogin(){document.getElementById("pg-secret").style.display="none";document.getElementById("pg-login").style.display="flex"}
+function doLogout(){curCl=null;closePlayer();["pg-client","pg-admin"].forEach(p=>document.getElementById(p).style.display="none");document.getElementById("pg-login").style.display="flex";document.getElementById("sec-code").value="";document.getElementById("sec-ic").textContent="🔐";document.getElementById("sec-err").style.display="none"}
+
+// ═══ CLIENT ═══
+let hIdx=0,hTmr=null,selItem=null,chF="all",mvF="all",srF="all";
+function initCl(){
+  const c=curCl,left=dL(c.expiresAt||aD(30)),lc=left<=3?"#e53935":left<=30?"#ff9800":"#00c853";
+  document.getElementById("sub-badge").innerHTML=`<span style="font-size:11px;font-weight:800;padding:4px 11px;border-radius:20px;background:${lc}15;border:1px solid ${lc}40;color:${lc}">${left<=3?"⚠️":left<=30?"⏰":"🛡️"} ${left} يوم</span>`;
+  document.getElementById("prf-nm").textContent=c.name||"مشترك";
+  document.getElementById("prf-us").textContent=c.username;
+  document.getElementById("prf-det").innerHTML=[{l:"كود التفعيل",v:c.activationCode},{l:"يوزر",v:c.username},{l:"يوزر Xtream",v:c.xtreamUser},{l:"باسورد Xtream",v:c.xtreamPass},{l:"تاريخ الانتهاء",v:c.expiresAt},{l:"المتبقي",v:left+" يوم"}].map(r=>`<div onclick="cp(\'${r.v||""}')" style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer"><span style="font-family:monospace;font-size:11px;color:#ff4fa3">${r.v||"—"}</span><span style="font-size:12px;color:#8888aa">${r.l}</span></div>`).join("")+`<div style="font-size:9px;color:#333;text-align:center;margin-top:6px">اضغط لنسخ</div>`;
+  const sb=document.getElementById("sub-bar");
+  sb.style.cssText=`background:${lc}10;border:1px solid ${lc}28;border-radius:16px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px`;
+  sb.innerHTML=`<div style="font-size:30px">${left<=3?"⚠️":left<=30?"⏰":"🛡️"}</div><div style="text-align:right"><div style="font-size:11px;color:#8888aa">صلاحية اشتراكك</div><div style="font-size:18px;font-weight:900;color:${lc}">${left} يوم متبقي</div><div style="font-size:10px;color:#444">${c.expiresAt||""}</div></div>`;
+  updC();rendAll();initHero()
+}
+function updC(){document.getElementById("hcc").textContent=D.ch.length+" قناة";document.getElementById("hmc").textContent=D.mv.length+" فيلم";document.getElementById("hsc").textContent=D.sr.length+" مسلسل"}
+function rendAll(){rendHR();rendCh();rendMv();rendSr();rendML()}
+
+function mCardSm(m){const c=m.color||rc();return `<div style="flex:0 0 110px;cursor:pointer" onclick="openDet('${m.id}','movie')"><div style="width:110px;height:155px;border-radius:12px;background:linear-gradient(155deg,${c[0]},${c[1]});position:relative;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:7px;box-shadow:0 6px 18px rgba(0,0,0,.56);overflow:hidden">${m.emoji||"🎬"}<div style="position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent)"></div><div style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,.75);border-radius:5px;padding:2px 6px;font-size:9px;color:#ffd700;font-weight:700">★${m.rating||7}</div><div style="position:absolute;top:7px;left:7px;background:#ff4fa3;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px">${m.badge||"HD"}</div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(255,79,163,.3);border:1.5px solid rgba(255,79,163,.5);display:flex;align-items:center;justify-content:center;font-size:14px">▶</div></div></div><div style="font-size:11px;font-weight:700;text-align:center;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.title}</div><div style="font-size:9px;color:#555;text-align:center;margin-top:2px">${m.genre||""}</div></div>`}
+
+function sCardSm(s){const c=s.color||rc();return `<div style="flex:0 0 150px;cursor:pointer" onclick="openDet('${s.id}','series')"><div style="width:150px;height:95px;border-radius:12px;background:linear-gradient(135deg,${c[0]},${c[1]});position:relative;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:7px;overflow:hidden">${s.emoji||"📽️"}<div style="position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent)"></div><div style="position:absolute;bottom:7px;right:8px;font-size:9px;color:rgba(255,255,255,.7);font-weight:600">${s.eps||"?"} حلقة</div><div style="position:absolute;top:7px;left:7px;background:rgba(0,0,0,.7);border-radius:5px;padding:2px 5px;font-size:9px;color:#ffd700;font-weight:700">★${s.rating||7}</div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:32px;height:32px;border-radius:50%;background:rgba(0,137,123,.35);border:1.5px solid rgba(0,137,123,.5);display:flex;align-items:center;justify-content:center;font-size:13px">▶</div></div></div><div style="font-size:12px;font-weight:800;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title}</div><div style="font-size:9px;color:#555;text-align:center;margin-top:2px">${s.sub||""}</div></div>`}
+
+function rendHR(){document.getElementById("hmr").innerHTML=D.mv.slice(0,10).map(mCardSm).join("");document.getElementById("hsr").innerHTML=D.sr.slice(0,10).map(sCardSm).join("")}
+
+function catBar(items,key,curF,setF,col,elId){
+  const cats=["all",...new Set(items.map(i=>i[key]).filter(Boolean))];
+  document.getElementById(elId).innerHTML=cats.map(cat=>`<div onclick="${setF}=\'${cat}\';${setF==="chF"?"rendCh()":setF==="mvF"?"rendMv()":"rendSr()"}; document.getElementById(\'${elId}\').querySelectorAll(\'div\').forEach(x=>{x.style.background=\'rgba(255,255,255,.06)\';x.style.color=\'#8888aa\';x.style.border=\'1px solid rgba(255,255,255,.08)\'});this.style.background=\'${col}\';this.style.color=\'#fff\';this.style.border=\'none\';" style="white-space:nowrap;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;${cat===eval(curF)?`background:${col};color:#fff;border:none`:"background:rgba(255,255,255,.06);color:#8888aa;border:1px solid rgba(255,255,255,.08)"}">${cat==="all"?"الكل":cat}</div>`).join("")
+}
+
+function rendCh(q=""){
+  catBar(D.ch,"category","chF","chF","linear-gradient(135deg,#c62828,#e53935)","ch-cats");
+  const items=D.ch.filter(c=>(chF==="all"||c.category===chF)&&(!q||c.name.includes(q)));
+  document.getElementById("ch-list").innerHTML=items.length?items.map(ch=>`<div class="card" style="padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="launch(${JSON.stringify(ch).replace(/"/g,'&quot;')})"><div style="width:54px;height:54px;border-radius:13px;background:linear-gradient(135deg,#1a0030,#4a0080);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">${ch.emoji||"📺"}</div><div style="flex:1;text-align:right"><div style="font-size:14px;font-weight:800">${ch.name}</div><div style="font-size:10px;color:#8888aa;margin-top:2px">${ch.category||""} · 👁 ${ch.viewers||"0"}</div>${ch.url?`<div style="font-size:9px;color:#ff4fa3;font-family:monospace">${ch.urlType?.toUpperCase()||""} ✓</div>`:`<div style="font-size:9px;color:#333">لا يوجد رابط</div>`}</div><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span class="lb" style="border-radius:3px">LIVE</span><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff4fa3,#ff8c42);display:flex;align-items:center;justify-content:center;font-size:14px">▶</div></div></div>`).join(""):`<div style="text-align:center;padding:40px;color:#444">لا توجد قنوات</div>`
+}
+
+function rendMv(q=""){
+  catBar(D.mv,"genre","mvF","mvF","linear-gradient(135deg,#4527a0,#7c4dff)","mv-cats");
+  const items=D.mv.filter(m=>(mvF==="all"||m.genre===mvF)&&(!q||m.title?.includes(q)||m.ar?.includes(q)));
+  document.getElementById("mv-grid").innerHTML=items.length?items.map(m=>{const c=m.color||rc();return `<div onclick="openDet('${m.id}','movie')" style="cursor:pointer;border-radius:14px;overflow:hidden;background:linear-gradient(155deg,${c[0]},${c[1]});position:relative;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 6px 20px rgba(0,0,0,.5)">${m.emoji||"🎬"}<div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(0deg,rgba(0,0,0,.88),transparent)"></div><div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);border-radius:5px;padding:2px 6px;font-size:9px;color:#ffd700;font-weight:700">★${m.rating||7}</div><div style="position:absolute;top:8px;left:8px;background:#ff4fa3;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px">${m.badge||"HD"}</div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,79,163,.3);border:2px solid rgba(255,79,163,.5);display:flex;align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(4px)">▶</div><div style="position:absolute;bottom:8px;right:8px;left:8px;text-align:right"><div style="font-size:12px;font-weight:900;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${m.title}</div><div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:2px">${m.genre||""} · ${m.year||""}</div></div></div>`}).join(""):`<div style="text-align:center;padding:40px;color:#444;grid-column:span 2">لا توجد أفلام</div>`
+}
+
+function rendSr(q=""){
+  catBar(D.sr,"genre","srF","srF","linear-gradient(135deg,#004d40,#00897b)","sr-cats");
+  const items=D.sr.filter(s=>(srF==="all"||s.genre===srF)&&(!q||s.title?.includes(q)||s.sub?.includes(q)));
+  document.getElementById("sr-grid").innerHTML=items.length?items.map(s=>{const c=s.color||rc();return `<div onclick="openDet('${s.id}','series')" style="cursor:pointer;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,${c[0]},${c[1]});position:relative;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:0 6px 20px rgba(0,0,0,.5)">${s.emoji||"📽️"}<div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(0deg,rgba(0,0,0,.88),transparent)"></div><div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);border-radius:5px;padding:2px 5px;font-size:9px;color:#ffd700;font-weight:700">★${s.rating||7}</div><div style="position:absolute;top:8px;right:8px;background:rgba(0,200,83,.8);color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px">${s.eps||"?"} حلقة</div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,137,123,.35);border:2px solid rgba(0,137,123,.5);display:flex;align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(4px)">▶</div><div style="position:absolute;bottom:8px;right:8px;left:8px;text-align:right"><div style="font-size:12px;font-weight:900;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${s.title}</div><div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:2px">${s.genre||""} · ${s.seasons||1} مواسم</div></div></div>`}).join(""):`<div style="text-align:center;padding:40px;color:#444;grid-column:span 2">لا توجد مسلسلات</div>`
+}
+
+function filt(t,q){if(t==="ch")rendCh(q);else if(t==="mv")rendMv(q);else rendSr(q)}
+function rendML(){const list=D.ml;document.getElementById("lc").textContent=list.length;document.getElementById("ml-empty").style.display=list.length?"none":"block";document.getElementById("ml-grid").innerHTML=list.map(x=>{const c=x.color||rc();return `<div onclick="openDet('${x.id}','${x.type}')" style="cursor:pointer;border-radius:14px;overflow:hidden;background:linear-gradient(155deg,${c[0]},${c[1]});position:relative;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:46px;box-shadow:0 4px 16px rgba(0,0,0,.5)">${x.emoji||"🎬"}<div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent)"></div><div style="position:absolute;bottom:8px;right:8px;left:8px;text-align:right;font-size:11px;font-weight:700">${x.title||x.name||""}</div></div>`}).join("")}
+
+function initHero(){if(hTmr)clearInterval(hTmr);rendHero();hTmr=setInterval(()=>{const m=D.mv;hIdx=(hIdx+1)%Math.min(5,m.length);rendHero()},5000)}
+function rendHero(){const mv=D.mv;if(!mv.length)return;const m=mv[hIdx],c=m.color||rc();document.getElementById("hbg").style.background=`linear-gradient(155deg,${c[0]},${c[1]},${c[2]||c[0]})`;document.getElementById("hem").textContent=m.emoji||"🎬";document.getElementById("ht").textContent=m.title;document.getElementById("har").textContent=m.ar||"";document.getElementById("hst").innerHTML=`${st(m.rating||7)} <span style="color:#444">(${m.rating||7})</span>`;document.getElementById("hbw").innerHTML=`<span style="background:#ff4fa3;color:#fff;font-size:9px;font-weight:900;padding:2px 8px;border-radius:4px">${m.badge||"HD"}</span><span style="background:rgba(255,255,255,.1);color:#ccc;font-size:9px;padding:2px 7px;border-radius:4px">${m.year||""}</span>`;document.getElementById("hdots").innerHTML=mv.slice(0,5).map((_,i)=>`<div onclick="hIdx=${i};rendHero();" style="width:${i===hIdx?22:6}px;height:6px;border-radius:3px;background:${i===hIdx?"linear-gradient(90deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.2)"};cursor:pointer;transition:all .3s"></div>`).join("")}
+function playHero(){const m=D.mv[hIdx];if(m)launch(m)}
+function toggleHL(){const m=D.mv[hIdx];if(m)togItem(m)}
+function goTo(sc){document.querySelectorAll(".scr").forEach(s=>s.classList.remove("on"));document.getElementById("sc-"+sc)?.classList.add("on");document.querySelectorAll(".ni").forEach(n=>n.classList.remove("on"));if(sc==="live"){document.querySelectorAll(".ni")[2]?.classList.add("on");rendCh()}else if(sc==="movies"){document.querySelectorAll(".ni")[0]?.classList.add("on");rendMv();updC()}else if(sc==="series"){document.querySelectorAll(".ni")[0]?.classList.add("on");rendSr();updC()}}
+function swSc(name,el){document.querySelectorAll(".scr").forEach(s=>s.classList.remove("on"));document.getElementById("sc-"+name)?.classList.add("on");document.querySelectorAll(".ni").forEach(n=>n.classList.remove("on"));el?.classList.add("on");if(name==="mylist")rendML();if(name==="live")rendCh();if(name==="movies"){rendMv();updC()}if(name==="series"){rendSr();updC()}if(name==="home"){rendHR();updC()}}
+
+function openDet(id,type){const items=type==="movie"?D.mv:type==="series"?D.sr:D.ch;const item=items.find(x=>x.id===id);if(!item)return;selItem=item;const c=item.color||rc();const p=document.getElementById("det-post");p.style.cssText=`width:100px;height:140px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(155deg,${c[0]},${c[1]});box-shadow:0 10px 32px ${c[1]}77`;p.textContent=item.emoji||"🎬";document.getElementById("det-tit").textContent=item.title||item.name||"";document.getElementById("det-sub").textContent=item.ar||item.sub||"";document.getElementById("det-st").innerHTML=`${st(item.rating||7)} <span style="color:#444">(${item.rating||7}/10)</span>`;document.getElementById("det-mt").textContent=type==="series"?`${item.seasons||1} مواسم · ${item.eps||"?"} حلقة`:`${item.year||""} · ${item.duration||""}`;document.getElementById("det-gn").textContent=item.genre||item.category||"";const inL=D.ml.find(x=>x.id===item.id);const lb=document.getElementById("det-lb");lb.textContent=inL?"✓ في قائمتك":"+ أضف للقائمة";lb.style.background=inL?"rgba(255,79,163,.15)":"rgba(255,255,255,.07)";lb.style.color=inL?"#ff4fa3":"#aaa";document.getElementById("det-mo").classList.add("show")}
+function closeDet(){document.getElementById("det-mo").classList.remove("show")}
+function playSel(){if(selItem){closeDet();launch(selItem)}}
+function togSelL(){if(selItem){togItem(selItem);openDet(selItem.id,selItem.type)}}
+function togItem(item){let list=D.ml;const i=list.findIndex(x=>x.id===item.id);if(i>=0){list.splice(i,1);toast("تم الحذف من القائمة")}else{list.push(item);toast("تم الإضافة ✅")}D.ml=list;rendML()}
+function doSearch(){const q=document.getElementById("s-inp").value.toLowerCase().trim();const all=[...D.mv.map(m=>({...m,k:"movie"})),...D.sr.map(s=>({...s,k:"series"})),...D.ch.map(c=>({...c,k:"live"}))];if(!q){document.getElementById("s-res").innerHTML=`<div style="font-size:13px;color:#444;margin-bottom:12px;font-weight:700">🔥 الأكثر بحثاً</div>${["Ocean's Eleven","باب الحارة","Rambo","ورود وذنوب","beIN Sports"].map(t=>`<div onclick="document.getElementById('s-inp').value='${t}';doSearch();" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;color:#ccc;cursor:pointer;display:flex;align-items:center;gap:10px">🔍 ${t}</div>`).join("")}`;return}const res=all.filter(x=>x.title?.toLowerCase().includes(q)||x.name?.toLowerCase().includes(q)||x.ar?.includes(q)||x.sub?.includes(q)||x.genre?.includes(q)||x.category?.includes(q));if(!res.length){document.getElementById("s-res").innerHTML=`<div style="text-align:center;color:#444;padding:40px 0">لا توجد نتائج</div>`;return}const ic={movie:"🎬",series:"📽️",live:"📺"},lb2={movie:"فيلم",series:"مسلسل",live:"قناة"};document.getElementById("s-res").innerHTML=res.map(x=>{const c=x.color||rc();return `<div onclick="${x.k==="live"?`launch(${JSON.stringify(x).replace(/"/g,"&quot;")})`:`openDet('${x.id}','${x.k}')`}" class="card" style="padding:12px;margin-bottom:10px;cursor:pointer;display:flex;gap:14px;align-items:center"><div style="width:52px;height:70px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,${c[0]},${c[1]});display:flex;align-items:center;justify-content:center;font-size:28px">${x.emoji||"🎬"}</div><div style="flex:1;text-align:right"><div style="font-size:14px;font-weight:800">${x.title||x.name}</div><div style="font-size:11px;color:#8888aa;margin-top:2px">${x.ar||x.sub||x.category||""}</div><div style="font-size:10px;color:#444;margin-top:4px">${ic[x.k]} ${lb2[x.k]} · ★${x.rating||"—"}</div></div></div>`}).join("")}
+
+// ═══ ADMIN ═══
+function initAdmin(){setAT("dash",document.querySelector(".atab"))}
+function setAT(tab,el){document.querySelectorAll(".atab").forEach(t=>t.classList.remove("on"));el?.classList.add("on");const c=document.getElementById("ac");const fns={dash:rDash,clients:rCl,codes:rCodes,import:rImport,channels:rChTab,movies:()=>rContent("movie"),series:()=>rContent("series"),cats:rCats,settings:rSettings};c.innerHTML=(fns[tab]||rDash)()}
+
+function rDash(){const cl=D.cl,mv=D.mv,sr=D.sr,ch=D.ch;const ac=cl.filter(c=>c.status==="active").length,ex=cl.filter(c=>c.status==="expired").length,sn=cl.filter(c=>c.status==="active"&&dL(c.expiresAt)<=7).length;const stats=[{l:"العملاء",v:cl.length,i:"👥",c:"#2979ff"},{l:"نشطون",v:ac,i:"✅",c:"#00c853"},{l:"منتهية",v:ex,i:"⏰",c:"#e53935"},{l:"تنتهي قريباً",v:sn,i:"⚠️",c:"#ff9800"},{l:"الأفلام",v:mv.length,i:"🎬",c:"#ff4fa3"},{l:"المسلسلات",v:sr.length,i:"📽️",c:"#7c4dff"},{l:"القنوات",v:ch.length,i:"📺",c:"#00bcd4"}];return`<div style="font-size:16px;font-weight:900;margin-bottom:18px">📊 نظرة عامة</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px">${stats.map(s=>`<div class="card" style="padding:16px 14px"><div style="font-size:26px;margin-bottom:8px">${s.i}</div><div style="font-size:24px;font-weight:900;color:${s.c}">${s.v}</div><div style="font-size:11px;color:#8888aa;margin-top:2px">${s.l}</div></div>`).join("")}</div><div style="font-size:14px;font-weight:800;margin-bottom:12px">🕐 آخر العملاء</div>${[...cl].reverse().slice(0,4).map(c=>`<div class="card" style="padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:6px"><span class="pill ${c.status==="active"?"pg":"pr"}">${c.status==="active"?"نشط":"منتهي"}</span><span class="pill pb">${dL(c.expiresAt)} يوم</span></div><div style="text-align:right"><div style="font-size:13px;font-weight:800">${c.name}</div><div style="font-size:10px;color:#8888aa">${c.username}</div></div></div>`).join("")}`}
+
+function rCl(){const cl=D.cl;return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><button class="btn bsm" onclick="showAddCl()" style="margin-bottom:0;width:auto">➕ إضافة عميل</button><div style="font-size:15px;font-weight:900">👥 (${cl.length})</div></div>${cl.map(c=>{const left=dL(c.expiresAt);return`<div class="card" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;gap:6px"><span class="pill ${c.status==="active"?"pg":"pr"}" style="font-size:9px">${c.status==="active"?"● نشط":"● منتهي"}</span><span class="pill ${left<=3?"pr":left<=30?"po":"pb"}" style="font-size:9px">${left} يوم</span></div><div style="text-align:right"><div style="font-size:14px;font-weight:900">${c.name}</div><div style="font-size:11px;color:#8888aa">${c.username}</div></div></div><div style="background:rgba(0,0,0,.35);border-radius:10px;padding:10px 12px;margin-bottom:10px"><div onclick="cp('${c.activationCode}')" style="display:flex;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer"><span style="font-family:monospace;font-size:11px;color:#ff4fa3">${c.activationCode}</span><span style="font-size:10px;color:#444">كود التفعيل</span></div><div onclick="cp('${c.username} / ${c.password}')" style="display:flex;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer"><span style="font-family:monospace;font-size:10px;color:#aaa">${c.username} / ${c.password}</span><span style="font-size:10px;color:#444">يوزر/باسورد</span></div><div onclick="cp('${c.xtreamUser} / ${c.xtreamPass}')" style="display:flex;justify-content:space-between;cursor:pointer"><span style="font-family:monospace;font-size:10px;color:#aaa">${c.xtreamUser} / ${c.xtreamPass}</span><span style="font-size:10px;color:#444">Xtream</span></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn bb bsm" onclick="showRenew('${c.id}')" style="margin-bottom:0">🔄 تجديد</button><button class="btn bsm" style="margin-bottom:0;background:${c.status==="active"?"linear-gradient(135deg,#ff9800,#e65100)":"linear-gradient(135deg,#00c853,#00897b)"}" onclick="togCl('${c.id}')">${c.status==="active"?"⏸ وقف":"▶ تفعيل"}</button><button class="btn bsm bgr" onclick="resetCl('${c.id}')" style="margin-bottom:0">🎟️ كود جديد</button><button class="btn br bsm" onclick="delCl('${c.id}')" style="margin-bottom:0">🗑️</button></div></div>`}).join("")}`}
+
+function showAddCl(){document.getElementById("am-tit").textContent="➕ إضافة عميل";document.getElementById("am-body").innerHTML=`<input class="inp" id="nc-n" placeholder="الاسم الكامل"><input class="inp" id="nc-u" placeholder="اسم المستخدم"><input class="inp" id="nc-p" type="password" placeholder="كلمة المرور"><select class="sel" id="nc-d">${DURS.map(d=>`<option value="${d.d}">${d.l}</option>`).join("")}</select><select class="sel" id="nc-c">${[1,2,3,5].map(n=>`<option value="${n}">${n} ${n===1?"جهاز":"أجهزة"}</option>`).join("")}</select><input class="inp" id="nc-nt" placeholder="ملاحظات"><div style="display:flex;gap:10px"><button class="btn bgr" onclick="closeAM()">إلغاء</button><button class="btn" onclick="addCl()">✅ حفظ</button></div>`;document.getElementById("am").classList.add("show")}
+function addCl(){const n=document.getElementById("nc-n").value.trim(),u=document.getElementById("nc-u").value.trim(),p=document.getElementById("nc-p").value;if(!n||!u||!p){toast("يرجى ملء جميع الحقول","err");return}const d=parseInt(document.getElementById("nc-d").value),conn=parseInt(document.getElementById("nc-c").value),nt=document.getElementById("nc-nt").value;const cl=D.cl;cl.push({id:uid(),name:n,username:u,password:p,activationCode:gc(),xtreamUser:u+"_xt",xtreamPass:uid().slice(0,8),xtreamUrl:"http://genius.tv:8080",createdAt:new Date().toISOString().split("T")[0],expiresAt:aD(d),days:d,status:"active",maxConn:conn,notes:nt});D.cl=cl;closeAM();toast(`تم إضافة ${n} ✅`);setAT("clients",null)}
+function showRenew(id){document.getElementById("am-tit").textContent="🔄 تجديد";document.getElementById("am-body").innerHTML=`${DURS.map(d=>`<button class="btn bg" onclick="renewCl('${id}',${d.d})">🔄 تجديد ${d.l}</button>`).join("")}<button class="btn bgr" onclick="closeAM()">إغلاق</button>`;document.getElementById("am").classList.add("show")}
+function renewCl(id,d){const cl=D.cl,i=cl.findIndex(c=>c.id===id);if(i>=0){cl[i].expiresAt=aD(d);cl[i].status="active"}D.cl=cl;closeAM();toast("تم التجديد ✅");setAT("clients",null)}
+function togCl(id){const cl=D.cl,i=cl.findIndex(c=>c.id===id);if(i>=0)cl[i].status=cl[i].status==="active"?"suspended":"active";D.cl=cl;setAT("clients",null)}
+function delCl(id){if(!confirm("حذف؟"))return;D.cl=D.cl.filter(c=>c.id!==id);toast("تم الحذف","err");setAT("clients",null)}
+function resetCl(id){const cl=D.cl,i=cl.findIndex(c=>c.id===id);if(i>=0)cl[i].activationCode=gc();D.cl=cl;toast("تم إنشاء كود جديد ✅");setAT("clients",null)}
+
+function rCodes(){return`<div style="font-size:15px;font-weight:900;margin-bottom:18px">🎟️ أكواد التفعيل</div><div class="card" style="padding:16px;margin-bottom:20px"><select class="sel" id="gd">${DURS.map(d=>`<option value="${d.d}">${d.l}</option>`).join("")}</select><select class="sel" id="gc2">${[1,5,10,20,50].map(n=>`<option value="${n}">${n} كود</option>`).join("")}</select><button class="btn" onclick="genCodes()">⚡ توليد الأكواد</button></div><div id="gen-codes"></div><div style="font-size:14px;font-weight:800;margin-bottom:12px;margin-top:20px">📋 أكواد العملاء</div>${D.cl.map(c=>`<div onclick="cp('${c.activationCode}')" class="card" style="padding:11px 14px;margin-bottom:8px;cursor:pointer"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="pill ${c.status==="active"?"pg":"pr"}" style="font-size:9px">${dL(c.expiresAt)} يوم</span><div style="font-size:12px;font-weight:800">${c.name}</div></div><div style="font-family:monospace;font-size:12px;color:#ff4fa3">${c.activationCode}</div></div>`).join("")}`}
+function genCodes(){const d=parseInt(document.getElementById("gd").value),cnt=parseInt(document.getElementById("gc2").value);const codes=Array.from({length:cnt},()=>({code:gc(),d}));document.getElementById("gen-codes").innerHTML=`<div style="font-size:13px;font-weight:800;margin-bottom:12px">الأكواد (${cnt})</div>${codes.map(c=>`<div onclick="cp('${c.code}')" style="background:rgba(255,79,163,.07);border:1px solid rgba(255,79,163,.2);border-radius:10px;padding:11px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer"><div style="display:flex;gap:6px"><span class="pill pg" style="font-size:9px">متاح</span><span class="pill pb" style="font-size:9px">${c.d} يوم</span></div><div style="font-family:monospace;font-size:13px;font-weight:700;color:#ff4fa3">${c.code}</div></div>`).join("")}`;toast(`تم توليد ${cnt} كود ✅`)}
+
+// ═══ IMPORT ═══
+let impItems=[],impCT="live";
+function rImport(){return`<div style="font-size:15px;font-weight:900;margin-bottom:6px">📥 استيراد المحتوى</div><div style="font-size:12px;color:#8888aa;margin-bottom:16px">استورد قنوات أو أفلام أو مسلسلات بأي نوع رابط</div><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">1️⃣ نوع المحتوى</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px"><div onclick="setIC('live',this)" class="ic-b" style="text-align:center;padding:14px 4px;border-radius:12px;cursor:pointer;background:linear-gradient(135deg,#c62828,#e53935);color:#fff;font-size:11px;font-weight:800"><div style="font-size:24px;margin-bottom:6px">📺</div>قنوات</div><div onclick="setIC('movie',this)" class="ic-b" style="text-align:center;padding:14px 4px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,.07);color:#8888aa;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.08)"><div style="font-size:24px;margin-bottom:6px">🎬</div>أفلام</div><div onclick="setIC('series',this)" class="ic-b" style="text-align:center;padding:14px 4px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,.07);color:#8888aa;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.08)"><div style="font-size:24px;margin-bottom:6px">📽️</div>مسلسلات</div></div><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">2️⃣ طريقة الاستيراد</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px"><div onclick="setIM('m3u',this)" class="im-b" style="text-align:center;padding:10px 4px;border-radius:10px;cursor:pointer;background:linear-gradient(135deg,#2979ff,#1565c0);color:#fff;font-size:11px;font-weight:800">📋<br>M3U/M3U8</div><div onclick="setIM('xtream',this)" class="im-b" style="text-align:center;padding:10px 4px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.07);color:#8888aa;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.08)">⚡<br>Xtream</div><div onclick="setIM('direct',this)" class="im-b" style="text-align:center;padding:10px 4px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.07);color:#8888aa;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.08)">🔗<br>روابط مباشرة</div></div><div id="im-m3u"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">3️⃣ رابط M3U أو M3U8</div><input class="inp" id="m-url" style="font-family:monospace;direction:ltr" placeholder="http://server.com/playlist.m3u"><select class="sel" id="m-cat"><option value="عربي">عربي</option><option value="رياضة">رياضة</option><option value="أخبار">أخبار</option><option value="أفلام">أفلام</option><option value="أطفال">أطفال</option><option value="وثائقي">وثائقي</option><option value="ترفيه">ترفيه</option><option value="ديني">ديني</option></select><button class="btn" onclick="doImp()">📥 استيراد</button></div><div id="im-xtream" style="display:none"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">3️⃣ بيانات Xtream</div><input class="inp" id="x-url" style="font-family:monospace;direction:ltr" placeholder="http://server.com:8080"><input class="inp" id="x-user" style="font-family:monospace;direction:ltr" placeholder="username"><input class="inp" id="x-pass" type="password" placeholder="password"><div style="background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);border-radius:10px;padding:10px;margin-bottom:14px;font-size:11px;color:#7baeff">💡 سيتم استيراد المحتوى حسب النوع المحدد</div><button class="btn" onclick="doImp()">⚡ استيراد</button></div><div id="im-direct" style="display:none"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">3️⃣ الروابط (كل رابط في سطر)</div><textarea id="d-urls" class="inp" style="min-height:120px;resize:vertical;font-family:monospace;direction:ltr;text-align:left" placeholder="http://server.com/stream1.m3u8"></textarea><input class="inp" id="d-names" placeholder="أسماء المحتوى (اختياري)"><button class="btn" onclick="doImp()">🔗 استيراد</button></div><div id="im-prog" style="display:none;margin-top:10px"><div class="card" style="padding:20px;text-align:center"><div class="sc" style="margin:0 auto 12px"></div><div id="im-stat" style="font-size:13px;font-weight:700;color:#ff4fa3">جاري الاستيراد...</div></div></div><div id="im-res" style="display:none;margin-top:10px"><div style="background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px"><div style="font-size:32px;margin-bottom:8px">✅</div><div id="im-msg" style="font-size:14px;font-weight:800;color:#00c853"></div><div id="im-dest" style="font-size:11px;color:#8888aa;margin-top:4px"></div></div><div id="im-prev" style="max-height:260px;overflow-y:auto;margin-bottom:14px"></div><button class="btn bg" onclick="confImp()">✅ حفظ كل المحتوى</button><button class="btn bgr" onclick="cancImp()">❌ إلغاء</button></div>`}
+
+function setIC(t,el){impCT=t;document.querySelectorAll(".ic-b").forEach(b=>{b.style.background="rgba(255,255,255,.07)";b.style.color="#8888aa";b.style.border="1px solid rgba(255,255,255,.08)"});const cols={live:"linear-gradient(135deg,#c62828,#e53935)",movie:"linear-gradient(135deg,#4527a0,#7c4dff)",series:"linear-gradient(135deg,#004d40,#00897b)"};el.style.background=cols[t];el.style.color="#fff";el.style.border="none"}
+function setIM(m,el){["m3u","xtream","direct"].forEach(x=>{const d=document.getElementById("im-"+x);if(d)d.style.display=x===m?"block":"none"});document.querySelectorAll(".im-b").forEach(b=>{b.style.background="rgba(255,255,255,.07)";b.style.color="#8888aa";b.style.border="1px solid rgba(255,255,255,.08)"});el.style.background="linear-gradient(135deg,#2979ff,#1565c0)";el.style.color="#fff";el.style.border="none"}
+
+function parseM3U(text,defCat,ct){const lines=text.split("\n"),items=[];let i=0;const EM=ct==="live"?EML:ct==="movie"?EMM:EMS;while(i<lines.length){const line=lines[i].trim();if(line.startsWith("#EXTINF")){const nm=line.match(/,(.+)$/),gm=line.match(/group-title="([^"]+)"/);const name=nm?nm[1].trim():"محتوى",group=gm?gm[1]:defCat;const url=lines[i+1]?.trim();if(url&&!url.startsWith("#")){const em=EM[~~(Math.random()*EM.length)];const ut=url.includes(".m3u8")||url.includes("/live/")||url.includes("/hls/")?"m3u8":url.includes(".mp4")?"direct":"direct";if(ct==="live")items.push({id:uid(),name,category:group||defCat,emoji:em,url,urlType:ut,type:"live",viewers:"0"});else if(ct==="movie")items.push({id:uid(),title:name,ar:name,genre:group||"غير محدد",rating:7.0,year:2024,duration:"",emoji:em,color:rc(),badge:"HD",url,urlType:ut,type:"movie"});else items.push({id:uid(),title:name,sub:name,genre:group||"غير محدد",eps:1,seasons:1,rating:7.0,emoji:em,color:rc(),url,urlType:ut,type:"series"});i+=2;continue}}i++}return items}
+
+async function doImp(){
+  const isDirect=document.getElementById("im-direct")?.style.display==="block";
+  const isXt=document.getElementById("im-xtream")?.style.display==="block";
+  document.getElementById("im-prog").style.display="block";
+  document.getElementById("im-res").style.display="none";
+  try{
+    if(isDirect){
+      const urls=(document.getElementById("d-urls")?.value||"").trim().split("\n").map(u=>u.trim()).filter(u=>u);
+      const names=(document.getElementById("d-names")?.value||"").trim().split("\n").map(n=>n.trim());
+      if(!urls.length){toast("يرجى إدخال الروابط","err");document.getElementById("im-prog").style.display="none";return}
+      const EM=impCT==="live"?EML:impCT==="movie"?EMM:EMS;
+      impItems=urls.map((url,idx)=>{const name=names[idx]||`محتوى ${idx+1}`,em=EM[idx%EM.length],ut=url.includes(".m3u8")?"m3u8":"direct";if(impCT==="live")return{id:uid(),name,category:"عام",emoji:em,url,urlType:ut,type:"live",viewers:"0"};if(impCT==="movie")return{id:uid(),title:name,ar:name,genre:"غير محدد",rating:7.0,year:2024,duration:"",emoji:em,color:rc(),badge:"HD",url,urlType:ut,type:"movie"};return{id:uid(),title:name,sub:name,genre:"غير محدد",eps:1,seasons:1,rating:7.0,emoji:em,color:rc(),url,urlType:ut,type:"series"}});
+      showImpR();return
+    }
+    if(isXt){
+      const url=(document.getElementById("x-url")?.value||"").trim().replace(/\/$/,"");
+      const user=(document.getElementById("x-user")?.value||"").trim();
+      const pass=document.getElementById("x-pass")?.value||"";
+      if(!url||!user||!pass){toast("يرجى ملء جميع الحقول","err");document.getElementById("im-prog").style.display="none";return}
+      document.getElementById("im-stat").textContent="جاري الاتصال...";
+      let apiUrl=impCT==="live"?`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=ts`:impCT==="movie"?`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=mpegts&action=vod`:`${url}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=mpegts&action=series`;
+      const res=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(apiUrl));
+      if(!res.ok)throw new Error();
+      const text=await res.text();if(!text.includes("#EXTINF"))throw new Error();
+      impItems=parseM3U(text,impCT==="live"?"عربي":impCT==="movie"?"أفلام":"مسلسلات",impCT);
+      showImpR();return
+    }
+    const url=(document.getElementById("m-url")?.value||"").trim();
+    const cat=document.getElementById("m-cat")?.value||"عربي";
+    if(!url){toast("يرجى إدخال الرابط","err");document.getElementById("im-prog").style.display="none";return}
+    document.getElementById("im-stat").textContent="جاري التحميل...";
+    const res=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(url));
+    if(!res.ok)throw new Error();
+    const text=await res.text();if(!text.includes("#EXTINF")&&!text.includes("#EXTM3U"))throw new Error();
+    impItems=parseM3U(text,cat,impCT);showImpR()
+  }catch{document.getElementById("im-prog").style.display="none";toast("تعذر الاستيراد — تحقق من الرابط","err")}
+}
+
+function showImpR(){document.getElementById("im-prog").style.display="none";document.getElementById("im-res").style.display="block";const lbl=impCT==="live"?"قناة":impCT==="movie"?"فيلم":"مسلسل";const dest=impCT==="live"?"📺 القنوات":impCT==="movie"?"🎬 الأفلام":"📽️ المسلسلات";document.getElementById("im-msg").textContent=`تم العثور على ${impItems.length} ${lbl}`;document.getElementById("im-dest").textContent=`سيتم إضافتها إلى قسم ${dest}`;document.getElementById("im-prev").innerHTML=impItems.slice(0,15).map((item,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:6px"><span style="font-size:10px;color:#8888aa">${item.category||item.genre||""}</span><div style="text-align:right;flex:1;margin-right:10px"><div style="font-size:12px;font-weight:700">${item.emoji||"🎬"} ${item.name||item.title}</div><div style="font-size:9px;color:#ff4fa3;font-family:monospace;direction:ltr;text-align:left">${(item.url||"").slice(0,35)}...</div></div><span style="font-size:10px;color:#444">${i+1}</span></div>`).join("")+(impItems.length>15?`<div style="text-align:center;color:#8888aa;font-size:11px;padding:10px">... و ${impItems.length-15} أخرى</div>`:"")}
+function confImp(){if(!impItems.length)return;if(impCT==="live"){D.ch=[...D.ch,...impItems];toast(`تم استيراد ${impItems.length} قناة ✅`);setAT("channels",null)}else if(impCT==="movie"){D.mv=[...D.mv,...impItems];toast(`تم استيراد ${impItems.length} فيلم ✅`);setAT("movies",null)}else{D.sr=[...D.sr,...impItems];toast(`تم استيراد ${impItems.length} مسلسل ✅`);setAT("series",null)}impItems=[]}
+function cancImp(){impItems=[];document.getElementById("im-res").style.display="none"}
+
+// ═══ CHANNELS ADMIN ═══
+const CHEM=["📺","⚽","📰","🧒","🎬","🔍","🎭","📖","🎵","🌍","💼","🏆","🌟","🏙️","📡"];
+const CHCAT=["عربي","رياضة","أخبار","أطفال","أفلام","وثائقي","ترفيه","ديني","موسيقى"];
+const UTYPES=[{id:"m3u8",l:"📡 M3U8"},{id:"m3u",l:"📋 M3U"},{id:"xtream",l:"⚡ Xtream"},{id:"direct",l:"🔗 مباشر"}];
+
+function rChTab(){const ch=D.ch;return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;gap:6px"><button class="btn bsm" onclick="showAddCh()" style="margin-bottom:0;width:auto">➕ إضافة</button><button class="btn br bsm" onclick="if(confirm('مسح كل القنوات؟')){D.ch=[];setAT('channels',null)}" style="margin-bottom:0">🗑️ مسح الكل</button></div><div style="font-size:15px;font-weight:900">📺 (${ch.length})</div></div>${ch.map(c=>`<div class="card" style="padding:12px 14px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:6px"><button class="btn bb bsm" onclick="showEdCh('${c.id}')" style="margin-bottom:0">✏️</button><button class="btn br bsm" onclick="delCh('${c.id}')" style="margin-bottom:0">🗑️</button></div><div style="text-align:right;flex:1;margin-right:10px"><div style="font-size:13px;font-weight:800">${c.emoji||"📺"} ${c.name}</div><div style="font-size:10px;color:#8888aa">${c.category||""} · ${c.urlType?.toUpperCase()||""}</div>${c.url?`<div style="font-size:9px;color:#ff4fa3;font-family:monospace;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${c.url}</div>`:`<div style="font-size:9px;color:#333">لا يوجد رابط</div>`}</div><span class="lb" style="border-radius:3px">LIVE</span></div></div>`).join("")}`}
+
+function chForm(item){const v=item||{name:"",category:"عربي",emoji:"📺",url:"",urlType:"m3u8"};return`<input class="inp" id="ch-nm" value="${v.name||""}"><select class="sel" id="ch-ct">${CHCAT.map(c=>`<option value="${c}" ${v.category===c?"selected":""}>${c}</option>`).join("")}</select><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">${CHEM.map(e=>`<div onclick="document.querySelectorAll('.c-em').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('ch-em').value='${e}';" class="c-em" style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;background:${(v.emoji||"📺")===e?"rgba(255,79,163,.25)":"rgba(255,255,255,.05)"}">${e}</div>`).join("")}<input type="hidden" id="ch-em" value="${v.emoji||"📺"}"></div><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">نوع الرابط</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${UTYPES.map(t=>`<div onclick="document.querySelectorAll('.c-ut').forEach(x=>{x.style.background='rgba(255,255,255,.06)';x.style.color='#8888aa'});this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';this.style.color='#fff';document.getElementById('ch-ut').value='${t.id}';" class="c-ut" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:${(v.urlType||"m3u8")===t.id?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:${(v.urlType||"m3u8")===t.id?"#fff":"#8888aa"}">${t.l}</div>`).join("")}<input type="hidden" id="ch-ut" value="${v.urlType||"m3u8"}"></div><input class="inp" id="ch-url" style="font-family:monospace;direction:ltr" value="${v.url||""}"><div style="display:flex;gap:10px"><button class="btn bgr" onclick="closeAM()">إلغاء</button><button class="btn" onclick="saveCh('${item?.id||""}')">✅ ${item?"حفظ":"إضافة"}</button></div>`}
+
+function showAddCh(){document.getElementById("am-tit").textContent="➕ قناة جديدة";document.getElementById("am-body").innerHTML=chForm(null);document.getElementById("am").classList.add("show")}
+function showEdCh(id){const item=D.ch.find(c=>c.id===id);if(!item)return;document.getElementById("am-tit").textContent=`✏️ تعديل: ${item.name}`;document.getElementById("am-body").innerHTML=chForm(item);document.getElementById("am").classList.add("show")}
+function saveCh(eid){const name=document.getElementById("ch-nm").value.trim();if(!name){toast("يرجى إدخال الاسم","err");return}const base={name,category:document.getElementById("ch-ct").value,emoji:document.getElementById("ch-em").value,url:document.getElementById("ch-url").value,urlType:document.getElementById("ch-ut").value,type:"live",viewers:"0"};const ch=D.ch;if(eid){const i=ch.findIndex(x=>x.id===eid);if(i>=0)ch[i]={...ch[i],...base};toast("تم التعديل ✅")}else{ch.push({id:uid(),...base});toast("تم الإضافة ✅")}D.ch=ch;closeAM();setAT("channels",null)}
+function delCh(id){D.ch=D.ch.filter(c=>c.id!==id);toast("تم الحذف","err");setAT("channels",null)}
+
+// ═══ CONTENT (MOVIES/SERIES) ADMIN ═══
+const GM=["أكشن","دراما","كوميدي","رومانسي","إثارة","رعب","خيال علمي","وثائقي","تاريخي","مغامرة"];
+const GS=["دراما","رومانسي","كوميدي","إثارة","غموض","تاريخي","اجتماعي","جريمة"];
+const BDGS=["HD","4K","NEW","CAM","TS"];
+
+function rContent(kind){const items=kind==="movie"?D.mv:D.sr;return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;gap:6px"><button class="btn bsm" onclick="showAddCt('${kind}')" style="margin-bottom:0;width:auto">➕ إضافة</button><button class="btn br bsm" onclick="if(confirm('مسح الكل؟')){D.${kind==="movie"?"mv":"sr"}=[];setAT('${kind==="movie"?"movies":"series"}',null)}" style="margin-bottom:0">🗑️ مسح الكل</button></div><div style="font-size:15px;font-weight:900">${kind==="movie"?"🎬":"📽️"} (${items.length})</div></div>${items.map(item=>`<div class="card" style="padding:12px 14px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:6px"><button class="btn bb bsm" onclick="showEdCt('${item.id}','${kind}')" style="margin-bottom:0">✏️</button><button class="btn br bsm" onclick="delCt('${item.id}','${kind}')" style="margin-bottom:0">🗑️</button></div><div style="text-align:right;flex:1;margin-right:10px"><div style="font-size:13px;font-weight:800">${item.emoji||"🎬"} ${item.title}</div><div style="font-size:10px;color:#8888aa">${item.genre||""} · ★${item.rating||7}${kind==="series"?` · ${item.eps||"?"} حلقة`:` · ${item.year||""}`}</div>${item.url?`<div style="font-size:9px;color:#ff4fa3;font-family:monospace;direction:ltr;text-align:left">${(item.urlType||"").toUpperCase()}: ${item.url.slice(0,28)}...</div>`:`<div style="font-size:9px;color:#333">لا يوجد رابط</div>`}</div><div style="font-size:22px">${item.emoji||"🎬"}</div></div></div>`).join("")}`}
+
+function ctForm(kind,item){const GENRES=kind==="movie"?GM:GS;const EM=(kind==="movie"?EMM:EMS).slice(0,18);const v=item||{title:"",ar:"",genre:"",rating:"7.5",year:"2024",duration:"1س 30د",eps:"12",seasons:"1",emoji:"🎬",url:"",urlType:"direct",badge:"HD"};
+return`<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">إنجليزي</div><input class="inp" id="cf-t" value="${v.title||""}"></div><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">عربي</div><input class="inp" id="cf-a" value="${v.ar||v.sub||""}"></div></div>
+<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">التصنيف</div><select class="sel" id="cf-g">${GENRES.map(g=>`<option value="${g}" ${v.genre===g?"selected":""}>${g}</option>`).join("")}</select></div><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">التقييم</div><input class="inp" id="cf-r" value="${v.rating||7.5}"></div></div>
+${kind==="movie"?`<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">السنة</div><input class="inp" id="cf-y" value="${v.year||2024}"></div><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">المدة</div><input class="inp" id="cf-du" value="${v.duration||""}"></div></div><div style="margin-bottom:14px"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">الجودة</div><div style="display:flex;gap:6px">${BDGS.map(b=>`<div onclick="document.querySelectorAll('.cf-bd').forEach(x=>x.style.background='rgba(255,255,255,.06)');this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';document.getElementById('cf-b').value='${b}';" class="cf-bd" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;background:${(v.badge||"HD")===b?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:#fff">${b}</div>`).join("")}<input type="hidden" id="cf-b" value="${v.badge||"HD"}"></div></div>`:`<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">الحلقات</div><input class="inp" id="cf-e" value="${v.eps||12}"></div><div style="flex:1"><div style="font-size:11px;color:#8888aa;margin-bottom:6px;font-weight:700">المواسم</div><input class="inp" id="cf-s" value="${v.seasons||1}"></div></div>`}
+<div style="margin-bottom:14px"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:6px">${EM.map(e=>`<div onclick="document.querySelectorAll('.cf-em').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('cf-em-v').value='${e}';" class="cf-em" style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;background:${(v.emoji||"🎬")===e?"rgba(255,79,163,.25)":"rgba(255,255,255,.05)"}">${e}</div>`).join("")}<input type="hidden" id="cf-em-v" value="${v.emoji||"🎬"}"></div></div>
+<div style="margin-bottom:14px"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">نوع الرابط</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${[{id:"direct",l:"🔗 مباشر"},{id:"m3u",l:"📋 M3U"},{id:"m3u8",l:"📡 M3U8"},{id:"xtream",l:"⚡ Xtream"}].map(t=>`<div onclick="document.querySelectorAll('.cf-ut').forEach(x=>{x.style.background='rgba(255,255,255,.06)';x.style.color='#8888aa'});this.style.background='linear-gradient(135deg,#ff4fa3,#ff8c42)';this.style.color='#fff';document.getElementById('cf-ut-v').value='${t.id}';" class="cf-ut" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:${(v.urlType||"direct")===t.id?"linear-gradient(135deg,#ff4fa3,#ff8c42)":"rgba(255,255,255,.06)"};color:${(v.urlType||"direct")===t.id?"#fff":"#8888aa"}">${t.l}</div>`).join("")}<input type="hidden" id="cf-ut-v" value="${v.urlType||"direct"}"></div><input class="inp" id="cf-url" style="font-family:monospace;direction:ltr" placeholder="رابط البث..." value="${v.url||""}"></div>
+<div style="display:flex;gap:10px"><button class="btn bgr" onclick="closeAM()">إلغاء</button><button class="btn" onclick="saveCt('${kind}','${item?.id||""}')">✅ ${item?"حفظ":"إضافة"}</button></div>`}
+
+function showAddCt(kind){document.getElementById("am-tit").textContent=`➕ ${kind==="movie"?"فيلم":"مسلسل"}`;document.getElementById("am-body").innerHTML=ctForm(kind,null);document.getElementById("am").classList.add("show")}
+function showEdCt(id,kind){const items=kind==="movie"?D.mv:D.sr;const item=items.find(x=>x.id===id);if(!item)return;document.getElementById("am-tit").textContent=`✏️ تعديل: ${item.title}`;document.getElementById("am-body").innerHTML=ctForm(kind,item);document.getElementById("am").classList.add("show")}
+function saveCt(kind,eid){const title=document.getElementById("cf-t").value.trim();if(!title){toast("يرجى إدخال العنوان","err");return}const base={title,ar:document.getElementById("cf-a").value,genre:document.getElementById("cf-g").value,rating:parseFloat(document.getElementById("cf-r").value)||7.5,emoji:document.getElementById("cf-em-v").value,url:document.getElementById("cf-url").value,urlType:document.getElementById("cf-ut-v").value,type:kind,color:rc()};if(kind==="movie"){base.year=document.getElementById("cf-y").value;base.duration=document.getElementById("cf-du").value;base.badge=document.getElementById("cf-b").value}else{base.sub=base.ar;base.eps=parseInt(document.getElementById("cf-e").value)||12;base.seasons=parseInt(document.getElementById("cf-s").value)||1}const items=kind==="movie"?D.mv:D.sr;if(eid){const i=items.findIndex(x=>x.id===eid);if(i>=0)items[i]={...items[i],...base};toast("تم التعديل ✅")}else{items.push({id:uid(),...base});toast("تم الإضافة ✅")}if(kind==="movie")D.mv=items;else D.sr=items;closeAM();setAT(kind==="movie"?"movies":"series",null)}
+function delCt(id,kind){if(!confirm("حذف؟"))return;if(kind==="movie")D.mv=D.mv.filter(x=>x.id!==id);else D.sr=D.sr.filter(x=>x.id!==id);toast("تم الحذف","err");setAT(kind==="movie"?"movies":"series",null)}
+
+// ═══ CATEGORIES ADMIN ═══
+const CICONS=["📺","🎬","📽️","🧒","📻","📖","🎵","🎓","🔍","⚽","📰","🎭","🌍","💼","🏆","🎪","🎠","🎡"];
+function rCats(){return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><button class="btn bsm" onclick="showAddCat()" style="margin-bottom:0;width:auto">➕ إضافة</button><div style="font-size:15px;font-weight:900">🗂️ (${D.cat.length})</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${D.cat.map(c=>`<div class="card" style="padding:14px 12px;display:flex;align-items:center;justify-content:space-between"><span onclick="delCat('${c.id}')" style="color:#e53935;cursor:pointer;font-size:16px">✕</span><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700">${c.name}</span><span style="font-size:24px">${c.icon}</span></div></div>`).join("")}</div>`}
+function showAddCat(){document.getElementById("am-tit").textContent="➕ تصنيف جديد";document.getElementById("am-body").innerHTML=`<input class="inp" id="cat-n" placeholder="اسم التصنيف"><div style="font-size:11px;color:#8888aa;margin-bottom:8px;font-weight:700">الأيقونة</div><div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">${CICONS.map(e=>`<div onclick="document.querySelectorAll('.cat-ic').forEach(x=>x.style.background='rgba(255,255,255,.05)');this.style.background='rgba(255,79,163,.25)';document.getElementById('cat-iv').value='${e}';" class="cat-ic" style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;background:rgba(255,255,255,.05)">${e}</div>`).join("")}<input type="hidden" id="cat-iv" value="📁"></div><div style="display:flex;gap:10px"><button class="btn bgr" onclick="closeAM()">إلغاء</button><button class="btn" onclick="addCat()">✅ إضافة</button></div>`;document.getElementById("am").classList.add("show")}
+function addCat(){const name=document.getElementById("cat-n").value.trim(),icon=document.getElementById("cat-iv").value;if(!name){toast("يرجى إدخال الاسم","err");return}const cats=D.cat;cats.push({id:uid(),name,icon});D.cat=cats;closeAM();toast("تم الإضافة ✅");setAT("cats",null)}
+function delCat(id){D.cat=D.cat.filter(c=>c.id!==id);toast("تم الحذف","err");setAT("cats",null)}
+
+// ═══ SETTINGS ═══
+function rSettings(){return`<div style="font-size:15px;font-weight:900;margin-bottom:18px">⚙️ الإعدادات</div><div class="card" style="padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:800;margin-bottom:14px">🔐 بيانات الأدمن</div>${[{l:"يوزر الأدمن",v:ADMIN.u},{l:"الكود السري",v:ADMIN.s},{l:"الباسورد",v:"••••••••"}].map(r=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)"><span style="font-family:monospace;font-size:12px;color:#ff4fa3">${r.v}</span><span style="font-size:12px;color:#8888aa">${r.l}</span></div>`).join("")}</div><div class="card" style="padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:800;margin-bottom:12px">📊 إحصائيات</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">${[{l:"العملاء",v:D.cl.length,c:"#2979ff"},{l:"الأفلام",v:D.mv.length,c:"#ff4fa3"},{l:"القنوات",v:D.ch.length,c:"#00bcd4"},{l:"المسلسلات",v:D.sr.length,c:"#7c4dff"},{l:"التصنيفات",v:D.cat.length,c:"#00897b"},{l:"المفضلة",v:D.ml.length,c:"#ff9800"}].map(s=>`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:900;color:${s.c}">${s.v}</div><div style="font-size:10px;color:#8888aa">${s.l}</div></div>`).join("")}</div></div><div style="background:rgba(229,57,53,.07);border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:16px"><div style="font-size:13px;font-weight:800;margin-bottom:12px;color:#ff6b6b">⚠️ منطقة الخطر</div><button class="btn bo" onclick="toast('تم التصدير ✅','info')">📊 تصدير بيانات العملاء</button><button class="btn br" onclick="if(confirm('إعادة ضبط كل البيانات؟')){localStorage.clear();location.reload()}">🗑️ إعادة ضبط المصنع</button></div>`}
+function closeAM(){document.getElementById("am").classList.remove("show")}
+
+// ═══ INIT ═══
+window.onload=()=>{document.getElementById("pg-login").style.display="flex";document.getElementById("pg-login").style.flexDirection="column"}
+
+window.onload=()=>{document.getElementById("pg-login").style.display="flex";document.getElementById("pg-login").style.flexDirection="column"}
+</script>
+</body>
+</html>
